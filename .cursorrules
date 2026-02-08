@@ -1,0 +1,10 @@
+# Project Rules
+You are handling a full-stack project: 'travelpro'.
+- Frontend Path: ./travelpro-frontend
+- Backend Path: ./travelpro-backend
+
+GOLDEN RULE:
+Never break the link between Frontend and Backend.
+1. If you change a Backend Route (API), AUTOMATICALLY update the Frontend fetch call.
+2. If you add a variable in Backend, add it to the Frontend UI too.
+3. Use plain language to explain changes before writing code.
