@@ -42,7 +42,7 @@ const getFormRules = (type) => {
     case "bus":
     case "train":
     default:
-      return { showAgeGender: true, showContact: false };
+      return { showAgeGender: true, showContact: true };
   }
 };
 
@@ -173,8 +173,8 @@ export default function BookingModal({
                   {(passengers.length
                     ? passengers
                     : Array.from({ length: safeCount }, (_, i) => ({
-                        name: `${personLabels.singular} ${i + 1}`,
-                      }))
+                      name: `${personLabels.singular} ${i + 1}`,
+                    }))
                   ).map((p, idx) => (
                     <p key={idx} className="text-gray-700">
                       {idx + 1}. {p.name || personLabels.singular}{" "}
@@ -203,11 +203,10 @@ export default function BookingModal({
             <button
               onClick={handleContinue}
               disabled={!isReady}
-              className={`mt-6 w-full py-3 rounded-lg font-semibold transition shadow-md ${
-                isReady
+              className={`mt-6 w-full py-3 rounded-lg font-semibold transition shadow-md ${isReady
                   ? "bg-[#FFCC00] text-black hover:bg-[#f2c200]"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+                }`}
             >
               Continue
             </button>

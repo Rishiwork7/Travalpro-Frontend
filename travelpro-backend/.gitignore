@@ -1,16 +1,16 @@
-# Dependencies (Ye bahut bhari hote hain)
+# Dependencies
 node_modules
-.pnp
-.pnp.js
+package-lock.json  
+yarn.lock
 
-# Security (Ye sabse zaroori hai)
+# Environment Variables (SECRETS)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Build Output (Ye automatic banta hai)
+# Build Output 
 dist
 build
 
@@ -19,6 +19,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# OS Junk
+# OS Generated Files (Mac/Windows junk)
 .DS_Store
 Thumbs.db

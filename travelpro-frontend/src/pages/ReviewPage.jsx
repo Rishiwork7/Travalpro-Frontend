@@ -41,24 +41,32 @@ export default function ReviewPage() {
 
   const handleProceed = async () => {
     try {
-      await fetch("http://localhost:5001/api/leads", {
+      const payload = {
+        service,
+        flightId: booking?.id,
+        primaryContact: primaryContact || {},
+        passengers: passengers.map((p) => ({
+          type: p.type || "Adult",
+          firstName: p.firstName,
+          lastName: p.lastName,
+          dob: p.dob,
+          gender: p.gender,
+        })),
+        totalAmount: totalPrice,
+        bookingDetails: booking,
+      };
+      console.log("Submitting Lead Payload:", payload);
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          service,
-          flightId: booking?.id,
-          primaryContact: primaryContact || {},
-          passengers: passengers.map((p) => ({
-            type: p.type || "Adult",
-            firstName: p.firstName,
-            lastName: p.lastName,
-            dob: p.dob,
-            gender: p.gender,
-          })),
-          totalAmount: totalPrice,
-          bookingDetails: booking,
-        }),
+        body: JSON.stringify(payload),
       });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        console.error("Lead API Error:", errData);
+      }
       setMaintenanceOpen(true);
     } catch (error) {
       console.error("Lead Save Error:", error);
@@ -144,8 +152,8 @@ export default function ReviewPage() {
               {(passengers.length
                 ? passengers
                 : Array.from({ length: passengerCount }, (_, i) => ({
-                    firstName: `${personLabels.singular} ${i + 1}`,
-                  }))
+                  firstName: `${personLabels.singular} ${i + 1}`,
+                }))
               ).map((p, idx) => (
                 <div key={idx} className="flex justify-between border-b border-gray-200 pb-2">
                   <span>
@@ -180,8 +188,8 @@ export default function ReviewPage() {
                   {(passengers.length
                     ? passengers
                     : Array.from({ length: passengerCount }, (_, i) => ({
-                        firstName: `${personLabels.singular} ${i + 1}`,
-                      })))
+                      firstName: `${personLabels.singular} ${i + 1}`,
+                    })))
                     .map((p, idx) => (
                       <p key={idx} className="text-gray-700">
                         {(p.firstName || personLabels.singular)} {p.lastName || ""} {idx === 0 && "(Contact)"}
@@ -204,8 +212,8 @@ export default function ReviewPage() {
             <div className="space-y-4 text-sm text-gray-700">
               <div className="flex justify-between">
                 <span>Base Fare</span>
-                  <span className="font-medium text-[#0a821c]">{formatPrice(basePrice)}</span>
-                </div>
+                <span className="font-medium text-[#0a821c]">{formatPrice(basePrice)}</span>
+              </div>
 
               <div className="flex justify-between">
                 <span>Taxes & Fees</span>
@@ -224,8 +232,8 @@ export default function ReviewPage() {
                 {(passengers.length
                   ? passengers
                   : Array.from({ length: passengerCount }, (_, i) => ({
-                      firstName: `${personLabels.singular} ${i + 1}`,
-                    })))
+                    firstName: `${personLabels.singular} ${i + 1}`,
+                  })))
                   .map((p, idx) => (
                     <p key={idx}>
                       {personLabels.singular} {idx + 1}: {(p.firstName || personLabels.singular)} {p.lastName || ""}

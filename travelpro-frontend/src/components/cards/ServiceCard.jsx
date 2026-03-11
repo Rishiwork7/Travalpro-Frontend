@@ -15,7 +15,10 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+import { useSettings } from "../../context/SettingsContext";
+
 const ServiceCard = ({ type, data, onBook }) => {
+  const { formatPrice } = useSettings();
   // 1. CONFIGURATION: Colors & Icons per Service
   const getConfig = () => {
     switch (type) {
@@ -133,9 +136,8 @@ const ServiceCard = ({ type, data, onBook }) => {
             <div className="w-full h-[2px] bg-gray-200 relative flex items-center justify-between">
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
               <Plane
-                className={`w-4 h-4 text-gray-300 ${
-                  type === "bus" ? "" : "rotate-90"
-                }`}
+                className={`w-4 h-4 text-gray-300 ${type === "bus" ? "" : "rotate-90"
+                  }`}
               />
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
             </div>
@@ -158,7 +160,7 @@ const ServiceCard = ({ type, data, onBook }) => {
         <div className="w-full md:w-1/4 text-right border-l border-gray-100 pl-6 border-dashed flex flex-col justify-center">
           <p className="text-xs text-gray-400">Total Fare</p>
           <h3 className="text-2xl font-bold text-[#0f294d] mb-3">
-            ₹ {data.price?.toLocaleString()}
+            {formatPrice(data.price)}
           </h3>
           <button
             onClick={() => onBook(data)}
@@ -239,7 +241,7 @@ const ServiceCard = ({ type, data, onBook }) => {
               {type === "hotels" ? "Per Night" : "Total Price"}
             </p>
             <p className="text-2xl font-bold text-[#0f294d]">
-              ₹ {data.price?.toLocaleString()}
+              {formatPrice(data.price)}
             </p>
           </div>
           <button

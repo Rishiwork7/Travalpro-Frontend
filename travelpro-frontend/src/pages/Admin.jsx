@@ -23,11 +23,21 @@ export default function Admin() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/leads");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
+        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
+      });
+      if (!res.ok) throw new Error("Unauthorized");
       const data = await res.json();
-      setLeads(data);
-    } catch {
-      alert("Failed to fetch leads");
+      if (Array.isArray(data)) {
+        setLeads(data);
+      } else {
+        console.error("Leads data is not an array:", data);
+        setLeads([]);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch leads. Check password.");
+      setAuthorized(false); // Logout if failed
     }
     setLoading(false);
   };
@@ -37,8 +47,9 @@ export default function Admin() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:5001/api/leads/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
         method: "DELETE",
+        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
       });
 
       if (res.ok) {
@@ -59,8 +70,9 @@ export default function Admin() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch("http://localhost:5001/api/leads/clear-all", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/clear-all`, {
         method: "DELETE",
+        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
       });
 
       if (res.ok) {
@@ -181,59 +193,58 @@ export default function Admin() {
             >
               <div className="flex justify-between items-center mb-4">
 
-              <div>
-                <span className="text-[#d13b1a] font-semibold uppercase text-sm">
-                  {lead.service}
-                </span>
-                <p className="text-xs text-gray-600">
-                  {new Date(lead.createdAt).toLocaleString()}
-                </p>
-              </div>
+                <div>
+                  <span className="text-[#d13b1a] font-semibold uppercase text-sm">
+                    {lead.service}
+                  </span>
+                  <p className="text-xs text-gray-600">
+                    {new Date(lead.createdAt).toLocaleString()}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-3">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                    String(lead.status || "").toLowerCase() === "new"
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${String(lead.status || "").toLowerCase() === "new"
                       ? "bg-green-500"
                       : "bg-gray-500"
-                  }`}
-                >
-                  {lead.status}
-                </span>
-                <button
-                  onClick={() => handleDelete(lead._id)}
-                  className="text-red-600 hover:text-red-900 transition"
-                  title="Delete lead"
-                  aria-label="Delete lead"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+                      }`}
+                  >
+                    {lead.status}
+                  </span>
+                  <button
+                    onClick={() => handleDelete(lead._id)}
+                    className="text-red-600 hover:text-red-900 transition"
+                    title="Delete lead"
+                    aria-label="Delete lead"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
 
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
 
-              <div>
-                <p><strong className="text-[#0f294d]">Email:</strong> {lead.email}</p>
-                <p><strong className="text-[#0f294d]">Phone:</strong> {lead.phone}</p>
-              </div>
+                <div>
+                  <p><strong className="text-[#0f294d]">Email:</strong> {lead.email}</p>
+                  <p><strong className="text-[#0f294d]">Phone:</strong> {lead.phone}</p>
+                </div>
 
-              <div>
-                <p><strong className="text-[#0f294d]">Booking:</strong></p>
-                <p className="text-gray-600 text-xs mt-1">
-                  {lead.bookingDetails?.title ||
-                    lead.bookingDetails?.airline ||
-                    lead.flightId ||
-                    "Details Available"}
-                </p>
-                <p className="text-gray-600 text-xs mt-1">
-                  Passengers: {lead.passengers?.length || 0}
-                </p>
-                <p className="text-gray-600 text-xs mt-1">
-                  Total: <span className="text-[#0a821c] font-semibold">{formatPrice(lead.totalAmount || 0)}</span>
-                </p>
-              </div>
+                <div>
+                  <p><strong className="text-[#0f294d]">Booking:</strong></p>
+                  <p className="text-gray-600 text-xs mt-1">
+                    {lead.bookingDetails?.title ||
+                      lead.bookingDetails?.airline ||
+                      lead.flightId ||
+                      "Details Available"}
+                  </p>
+                  <p className="text-gray-600 text-xs mt-1">
+                    Passengers: {lead.passengers?.length || 0}
+                  </p>
+                  <p className="text-gray-600 text-xs mt-1">
+                    Total: <span className="text-[#0a821c] font-semibold">{formatPrice(lead.totalAmount || 0)}</span>
+                  </p>
+                </div>
 
               </div>
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import CallDropdown from "./CallDropdown";
 import { playHoverSound } from "../utils/sounds";
@@ -10,26 +10,37 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { currency, language, setCurrency, setLanguage } = useSettings();
 
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const activeService = searchParams.get("service") || "flights";
+  const isHome = location.pathname === "/";
+
+  const getLinkClass = (service) => {
+    const isActive = isHome && activeService === service;
+    return `text-[#0f294d] font-semibold cursor-pointer transition ${isActive ? "text-[#FFCC00]" : "hover:text-[#FFCC00]"
+      }`;
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-        
+
         <Link to="/" className="text-2xl font-bold text-[#0f294d]">
-          Travel<span className="text-[#FFCC00]">Pro</span>
+          Traval<span className="text-[#FFCC00]">Pro</span>
         </Link>
-        
+
 
         <div className="hidden md:flex gap-8 items-center text-sm">
           <div className="flex gap-6 items-center">
-            <span className="text-[#0f294d] font-semibold cursor-pointer hover:text-[#FFCC00] transition">
+            <Link to="/?service=flights" className={getLinkClass("flights")}>
               Flights
-            </span>
-            <span className="text-[#0f294d] font-semibold cursor-pointer hover:text-[#FFCC00] transition">
+            </Link>
+            <Link to="/?service=hotels" className={getLinkClass("hotels")}>
               Hotels
-            </span>
-            <span className="text-[#0f294d] font-semibold cursor-pointer hover:text-[#FFCC00] transition">
+            </Link>
+            <Link to="/?service=packages" className={getLinkClass("packages")}>
               Packages
-            </span>
+            </Link>
           </div>
           <div className="border-l border-gray-200 pl-6" onMouseEnter={playHoverSound}>
             <CallDropdown />
@@ -55,9 +66,8 @@ export default function Navbar() {
                       setLanguage(lang);
                       setMenuOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                      language === lang ? "text-[#0f294d] font-semibold" : "text-gray-700"
-                    }`}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${language === lang ? "text-[#0f294d] font-semibold" : "text-gray-700"
+                      }`}
                   >
                     {lang}
                   </button>
@@ -65,16 +75,15 @@ export default function Navbar() {
                 <div className="px-4 py-2 text-xs uppercase tracking-wide text-gray-400 border-t border-gray-100">
                   Currency
                 </div>
-                {["INR", "USD", "AED", "EUR"].map((cur) => (
+                {["USD", "AED", "EUR"].map((cur) => (
                   <button
                     key={cur}
                     onClick={() => {
                       setCurrency(cur);
                       setMenuOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                      currency === cur ? "text-[#0f294d] font-semibold" : "text-gray-700"
-                    }`}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${currency === cur ? "text-[#0f294d] font-semibold" : "text-gray-700"
+                      }`}
                   >
                     {cur}
                   </button>

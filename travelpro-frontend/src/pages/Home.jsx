@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ServiceTabs from "../components/ServiceTabs";
@@ -8,7 +8,18 @@ import { Shield, Headset, Wallet, Star, ArrowUpRight, Quote, BadgeCheck } from "
 import { useSettings } from "../context/SettingsContext";
 
 export default function Home() {
-  const [activeService, setActiveService] = useState("flights");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeService, setActiveService] = useState(searchParams.get("service") || "flights");
+
+  const handleServiceChange = (serviceId) => {
+    setActiveService(serviceId);
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("service", serviceId);
+      return newParams;
+    });
+  };
+
   const [formData, setFormData] = useState({});
   const [email, setEmail] = useState("");
   const [toast, setToast] = useState("");
@@ -29,37 +40,37 @@ export default function Home() {
       to: "DXB",
       city: "Dubai",
       date: "2026-12-01",
-      price: 24500,
+      price: 295,
       tags: ["Direct Flight", "Refundable"],
       image:
-        "https://images.unsplash.com/photo-1504274066651-8d31a536b11a?q=80&w=1200&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1512453979798-5ea90b2009f4?q=80&w=1200&auto=format&fit=crop",
     },
     {
       from: "BOM",
       to: "LHR",
       city: "London",
       date: "2026-12-05",
-      price: 58500,
+      price: 700,
       tags: ["All Inclusive", "Best Seller"],
       image:
-        "https://images.unsplash.com/photo-1473959383414-b72c0e7b0e76?q=80&w=1200&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop",
     },
     {
       from: "BLR",
       to: "SIN",
       city: "Singapore",
       date: "2026-12-10",
-      price: 21800,
+      price: 260,
       tags: ["Direct Flight", "Flexible"],
       image:
-        "https://images.unsplash.com/photo-1508974239320-0a029497e820?q=80&w=1200&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=1200&auto=format&fit=crop",
     },
     {
       from: "MAA",
       to: "BKK",
       city: "Bangkok",
       date: "2026-12-15",
-      price: 19200,
+      price: 230,
       tags: ["Refundable", "Limited Time"],
       image:
         "https://images.unsplash.com/photo-1508009603885-50cf7c579365?q=80&w=1200&auto=format&fit=crop",
@@ -78,6 +89,8 @@ export default function Home() {
       }
       to = formData.city;
       date = formData.checkIn;
+      if (!formData.rooms) formData.rooms = 1;
+      if (!formData.adults) formData.adults = 1;
     } else if (activeService === "cabs") {
       if (!formData.pickup || !formData.drop || !formData.pickupDate) {
         alert("Fill all fields");
@@ -114,11 +127,13 @@ export default function Home() {
       date: date || "",
       passengers: String(passengers),
       service: activeService,
+      rooms: formData.rooms || "1",
+      adults: formData.adults || "1",
     }).toString();
 
     navigate(`/results?${params}`, {
       state: {
-        searchData: { ...formData, from, to, date, passengers },
+        searchData: { ...formData, from, to, date, passengers, adults: formData.adults || 1 },
         activeService,
       },
     });
@@ -134,6 +149,13 @@ export default function Home() {
     setEmail("");
     setTimeout(() => setToast(""), 3000);
   };
+
+  useEffect(() => {
+    const service = searchParams.get("service");
+    if (service) {
+      setActiveService(service);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!statsRef.current) return;
@@ -213,7 +235,7 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-gray-200">
               <ServiceTabs
                 activeService={activeService}
-                setActiveService={setActiveService}
+                setActiveService={handleServiceChange}
               />
               <div id="search-widget" className="px-4 pb-6">
                 <SearchWidget
@@ -338,9 +360,8 @@ export default function Home() {
             {stats.map((stat, index) => (
               <div
                 key={stat.key}
-                className={`flex flex-col items-center justify-center p-4 ${
-                  index > 0 ? "md:border-l md:border-white/10" : ""
-                }`}
+                className={`flex flex-col items-center justify-center p-4 ${index > 0 ? "md:border-l md:border-white/10" : ""
+                  }`}
               >
                 <h3 className="text-4xl md:text-5xl font-extrabold text-[#FFCC00] mb-2 font-mono drop-shadow-lg">
                   {stat.key === "rating" ? counts[stat.key].toFixed(1) : counts[stat.key]}

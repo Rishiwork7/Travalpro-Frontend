@@ -2,11 +2,12 @@ import { createContext, useContext, useMemo, useState } from "react";
 
 const SettingsContext = createContext(null);
 
+// Exchange rates relative to USD (Mock)
 const CURRENCY_RATES = {
-  INR: 1,
-  USD: 0.012,
-  EUR: 0.011,
-  AED: 0.044,
+  USD: 1,
+  INR: 83, // Kept for reference if needed, but UI will default to USD
+  AED: 3.67,
+  EUR: 0.92,
 };
 
 const CURRENCY_SYMBOLS = {
@@ -17,26 +18,22 @@ const CURRENCY_SYMBOLS = {
 };
 
 const formatNumber = (value, currency) => {
-  if (currency === "INR") {
-    return new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 }).format(
-      value
-    );
-  }
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(
-    value
-  );
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+    maximumFractionDigits: 0,
+  }).format(value);
 };
 
 export function SettingsProvider({ children }) {
-  const [currency, setCurrency] = useState("INR");
+  const [currency, setCurrency] = useState("USD");
   const [language, setLanguage] = useState("ENG");
 
   const formatPrice = useMemo(
     () => (amountInINR) => {
       const rate = CURRENCY_RATES[currency] || 1;
       const converted = Math.round(Number(amountInINR || 0) * rate);
-      const symbol = CURRENCY_SYMBOLS[currency] || "₹";
-      return `${symbol} ${formatNumber(converted, currency)}`;
+      return formatNumber(converted, currency);
     },
     [currency]
   );

@@ -52,7 +52,7 @@ const getFormConfig = (type) => {
         title: "Passenger Details",
         nameLabel: "Passenger Name",
         showAgeGender: true,
-        showContact: false,
+        showContact: true,
         showLicense: false,
       };
   }
@@ -67,6 +67,8 @@ const buildEntry = () => ({
   license: "",
 });
 
+import { useSettings } from "../context/SettingsContext";
+
 export default function BookingForm({
   passengerCount = 1,
   onChange,
@@ -75,6 +77,7 @@ export default function BookingForm({
   totalAmount,
   onSubmit,
 }) {
+  const { formatPrice } = useSettings();
   const safeCount = Number(passengerCount) > 0 ? Number(passengerCount) : 1;
   const [entries, setEntries] = useState(
     Array.from({ length: safeCount }, () => buildEntry())
@@ -152,7 +155,7 @@ export default function BookingForm({
             <div className="text-right">
               <p className="text-xs text-gray-500">Total</p>
               <p className="font-bold text-[#0f294d]">
-                ₹ {Number(totalAmount).toLocaleString()}
+                {formatPrice(totalAmount)}
               </p>
             </div>
           )}
@@ -295,11 +298,10 @@ export default function BookingForm({
       <button
         onClick={handlePay}
         disabled={!canSubmit}
-        className={`w-full py-3 rounded-lg font-semibold transition ${
-          canSubmit
-            ? "bg-[#0a821c] text-white hover:bg-[#086a16]"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        }`}
+        className={`w-full py-3 rounded-lg font-semibold transition ${canSubmit
+          ? "bg-[#0a821c] text-white hover:bg-[#086a16]"
+          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
       >
         {normalizeType(serviceType) === "insurance" ? "Get Quote" : "Pay / Book Now"}
       </button>
