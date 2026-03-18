@@ -26,7 +26,7 @@ export default function Contact() {
 
         <div className="glass-card rounded-xl p-6">
           <h2 className="text-xl font-semibold text-[#0f294d]">Email</h2>
-          <p className="mt-2 text-gray-700">support@travelpro.com</p>
+          <p className="mt-2 text-gray-700">support@travalpro.com</p>
           <p className="mt-2 text-gray-600 text-sm">
             We respond within 24 hours.
           </p>

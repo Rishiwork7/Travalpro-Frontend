@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
+import Navbar from "../components/Navbar";
+import API_BASE from "../config/api";
 import { useSettings } from "../context/SettingsContext";
 
 export default function Admin() {
@@ -9,7 +11,7 @@ export default function Admin() {
   const [passwordInput, setPasswordInput] = useState("");
   const { formatPrice } = useSettings();
 
-  const ADMIN_PASSWORD = "travelpro123";
+  const ADMIN_PASSWORD = "travalpro123";
 
   const handleLogin = () => {
     if (passwordInput === ADMIN_PASSWORD) {
@@ -23,7 +25,7 @@ export default function Admin() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
+      const res = await fetch(`${API_BASE}/api/leads`, {
         headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
       });
       if (!res.ok) throw new Error("Unauthorized");
@@ -47,7 +49,7 @@ export default function Admin() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${id}`, {
+      const res = await fetch(`${API_BASE}/api/leads/${id}`, {
         method: "DELETE",
         headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
       });
@@ -70,7 +72,7 @@ export default function Admin() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/clear-all`, {
+      const res = await fetch(`${API_BASE}/api/leads/clear-all`, {
         method: "DELETE",
         headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
       });
@@ -118,7 +120,7 @@ export default function Admin() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "travelpro_leads.csv");
+    link.setAttribute("download", "travalpro_leads.csv");
     document.body.appendChild(link);
     link.click();
   };

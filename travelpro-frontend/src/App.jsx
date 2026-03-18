@@ -9,23 +9,23 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
-
 function App() {
   return (
     <Router>
       <CallPopup />
       <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/results" element={<ResultsPage />} />
-  <Route path="/admin" element={<Admin />} />
-  <Route path="/review" element={<ReviewPage />} />
-  <Route path="/about" element={<About />} />
-  <Route path="/contact" element={<Contact />} />
-  <Route path="/privacy" element={<Privacy />} />
-  <Route path="/terms" element={<Terms />} />
-</Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/results" element={<ResultsPage />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/review" element={<ReviewPage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+

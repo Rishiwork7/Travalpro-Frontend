@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import Footer from "../components/Footer";
 import MaintenanceModal from "../components/MaintenanceModal";
 import { useSettings } from "../context/SettingsContext";
+import API_BASE from "../config/api";
 
 export default function ReviewPage() {
   const location = useLocation();
@@ -16,6 +18,8 @@ export default function ReviewPage() {
   const basePrice = Number(booking?.price || 0);
   const totalPrice = basePrice * passengerCount + 500;
   const normalizedService = String(service || "flights").toLowerCase();
+  // Random unsold seats: stable for this session (3, 4, or 5)
+  const unsoldSeats = useMemo(() => Math.floor(Math.random() * 3) + 3, []);
   const personLabels = (() => {
     switch (normalizedService) {
       case "hotels":
@@ -57,7 +61,7 @@ export default function ReviewPage() {
       };
       console.log("Submitting Lead Payload:", payload);
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
+      const res = await fetch(`${API_BASE}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -76,7 +80,6 @@ export default function ReviewPage() {
   return (
     <div className="min-h-screen bg-white text-[#1e293b] page-fade-in">
       <Navbar />
-
       <div className="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-3 gap-10">
         {/* LEFT - BOOKING + FORM */}
         <div className="lg:col-span-2 space-y-8">
@@ -86,46 +89,56 @@ export default function ReviewPage() {
             </h2>
 
             {service === "flights" && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={`https://images.kiwi.com/airlines/64/${booking.airlineCode}.png`}
-                      alt={booking.airlineName || booking.airline}
-                      className="w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200"
-                      onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/48?text=✈";
-                      }}
-                    />
-                    <div>
-                      <p className="text-lg font-semibold text-[#0f294d]">
-                        {booking.airlineName || booking.airline}
-                      </p>
-                      <p className="text-sm text-gray-600">Flight {booking.flightNumber || booking.flight}</p>
+              <>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={`https://images.kiwi.com/airlines/64/${booking.airlineCode}.png`}
+                        alt={booking.airlineName || booking.airline}
+                        className="w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-200"
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/48?text=✈";
+                        }}
+                      />
+                      <div>
+                        <p className="text-lg font-semibold text-[#0f294d]">
+                          {booking.airlineName || booking.airline}
+                        </p>
+                        <p className="text-sm text-gray-600">Flight {booking.flightNumber || booking.flight}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">Duration: {booking.duration}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-600">Duration: {booking.duration}</p>
+
+                  <div className="glass-card border border-gray-200 p-6 rounded-xl">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-xl font-bold text-[#0f294d]">{booking.departure}</p>
+                        <p className="text-sm text-gray-600">{booking.from}</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-24 h-px bg-gray-300"></div>
+                        <p className="text-xs mt-1 text-gray-600">Non-stop</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-[#0f294d]">{booking.arrival}</p>
+                        <p className="text-sm text-gray-600">{booking.to}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="glass-card border border-gray-200 p-6 rounded-xl">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-xl font-bold text-[#0f294d]">{booking.departure}</p>
-                      <p className="text-sm text-gray-600">{booking.from}</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="w-24 h-px bg-gray-300"></div>
-                      <p className="text-xs mt-1 text-gray-600">Non-stop</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xl font-bold text-[#0f294d]">{booking.arrival}</p>
-                      <p className="text-sm text-gray-600">{booking.to}</p>
-                    </div>
-                  </div>
+                {/* Urgency Banner */}
+                <div className="flex flex-col items-center text-center bg-red-50 border border-red-200 rounded-xl px-5 py-3 mt-4">
+                  <span className="text-red-500 text-xl mb-1">🔥</span>
+                  <p className="text-sm font-semibold text-red-700">
+                    We have identified <span className="text-red-600 font-bold">{unsoldSeats} unsold flight seats</span> specifically for your dates — book now before they're gone!
+                  </p>
                 </div>
-              </div>
+              </>
             )}
 
             <div className="mt-8">
@@ -260,6 +273,7 @@ export default function ReviewPage() {
         onClose={() => setMaintenanceOpen(false)}
         booking={booking}
       />
+      <Footer />
     </div>
   );
 }

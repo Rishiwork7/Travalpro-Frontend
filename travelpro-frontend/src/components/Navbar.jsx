@@ -4,6 +4,7 @@ import { Link, useSearchParams, useLocation } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import CallDropdown from "./CallDropdown";
 import { playHoverSound } from "../utils/sounds";
+import ScrollingTicker from "./ScrollingTicker";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,7 +23,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <>
+      <ScrollingTicker />
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
 
         <Link to="/" className="text-2xl font-bold text-[#0f294d]">
@@ -125,5 +128,6 @@ export default function Navbar() {
         </div>
       )}
     </nav>
+    </>
   );
 }

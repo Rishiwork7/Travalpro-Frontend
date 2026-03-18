@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ServiceTabs from "../components/ServiceTabs";
 import SearchWidget from "../components/SearchWidget";
-import { Shield, Headset, Wallet, Star, ArrowUpRight, Quote, BadgeCheck } from "lucide-react";
+import { Shield, Headset, Wallet, Star, ArrowUpRight, Quote, BadgeCheck, Globe, Search, CreditCard, Zap } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 
 export default function Home() {
@@ -218,21 +218,24 @@ export default function Home() {
             "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2000&auto=format&fit=crop')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          minHeight: "calc(100vh - 80px)",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f294d]/18 via-[#0f294d]/06 to-transparent"></div>
-        <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-16">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f294d]/40 via-[#0f294d]/20 to-[#0f294d]/50"></div>
+        <div className="relative w-full max-w-4xl mx-auto px-6 py-16 text-center">
+          <div className="mb-8 text-white">
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
               Book Smarter. Travel Better.
             </h1>
-            <p className="mt-3 text-white/90">
+            <p className="mt-3 text-white/90 text-lg">
               Compare top airlines and hotel partners with confidence.
             </p>
           </div>
 
-          <div className="mt-8">
-            <div className="bg-white rounded-2xl border border-gray-200">
+          <div>
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl">
               <ServiceTabs
                 activeService={activeService}
                 setActiveService={handleServiceChange}
@@ -250,6 +253,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* Trust Bar */}
       <section className="bg-slate-50/80 py-14">
@@ -388,7 +392,7 @@ export default function Home() {
             <div>
               <h2 className="text-2xl font-bold text-[#0f294d]">Loved by Millions</h2>
               <p className="text-sm text-gray-600 mt-2">
-                Verified reviews from travelers who booked with TravelPro.
+                Verified reviews from travelers who booked with TravalPro.
               </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -449,6 +453,97 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us & How It Works */}
+      <section className="py-20 bg-slate-50/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+            {/* Left Header & Features */}
+            <div className="space-y-10">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0f294d] leading-tight">
+                Why Choose Travalpro for <br className="hidden md:block" /> Your Next Journey?
+              </h2>
+
+              <div className="space-y-8">
+                {[
+                  {
+                    icon: <Shield className="w-6 h-6 text-blue-600" />,
+                    title: "Exclusive Wholesale Deals",
+                    desc: "We negotiate directly with airlines to access hidden inventory. These private rates are often 30-50% lower than public booking sites."
+                  },
+                  {
+                    icon: <Globe className="w-6 h-6 text-blue-600" />,
+                    title: "Strategic Route Planning",
+                    desc: "Multi-city or complex travel? Our experts use advanced tools to build efficient itineraries that automated search engines often miss."
+                  },
+                  {
+                    icon: <Headset className="w-6 h-6 text-blue-600" />,
+                    title: "Dedicated Human Support",
+                    desc: "Zero chatbots. No long hold times. You get a direct line to a professional travel consultant who handles every detail of your booking."
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-6 items-start">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-[#0f294d] mb-1">{item.title}</h4>
+                      <p className="text-[#64748b] text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Side - How it Works Card */}
+            <div className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-xl shadow-slate-200/50">
+              <h3 className="text-2xl font-bold text-[#0f294d] mb-10 text-center lg:text-left">Our Simple 3-Step Process</h3>
+
+              <div className="relative space-y-12">
+                {/* Vertical line connecting steps */}
+                <div className="absolute left-6 top-2 bottom-2 w-px bg-slate-100 hidden md:block"></div>
+
+                {[
+                  {
+                    step: "1",
+                    title: "Search Your Journey",
+                    desc: "Enter your destination and dates. Our engine scans 500+ carriers for the best possible wholesale availability."
+                  },
+                  {
+                    step: "2",
+                    title: "Instant Comparison",
+                    desc: "We instantly analyze hidden rates from our network of consolidators to find the one that fits your budget."
+                  },
+                  {
+                    step: "3",
+                    title: "Confirm & Save",
+                    desc: "Review your exclusive rate and finalize your booking. Our team ensures a seamless experience from checkout to takeoff."
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="relative flex flex-col md:flex-row gap-6 md:items-start">
+                    <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-blue-200 flex-shrink-0 z-10">
+                      {item.step}
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-[#0f294d] mb-2">{item.title}</h4>
+                      <p className="text-[#64748b] text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-slate-50 flex items-center gap-4 text-slate-400">
+                <CreditCard className="w-5 h-5 flex-shrink-0" />
+                <p className="text-xs leading-tight">
+                  We support all major payment methods. Your transaction is protected with bank-level SSL encryption.
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

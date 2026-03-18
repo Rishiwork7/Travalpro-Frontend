@@ -20,9 +20,8 @@ const LeadSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, "Phone number is required"],
       trim: true,
-      minlength: [10, "Phone number must be at least 10 characters"],
+      minlength: [7, "Phone number must be at least 7 characters"],
     },
     service: {
       type: String,

@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
         <div>
           <h2 className="text-2xl font-bold">
-            Travel<span className="text-[#FFCC00]">Pro</span>
+            Traval<span className="text-[#FFCC00]">Pro</span>
           </h2>
           <p className="text-white/70 mt-3 text-sm">
             Enterprise-grade travel booking for flights, hotels, and premium packages.
@@ -57,7 +57,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto border-t border-white/20 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-white/70 gap-4">
-        <div>© {new Date().getFullYear()} TravelPro. All rights reserved.</div>
+        <div>© {new Date().getFullYear()} Travalpro. All rights reserved.</div>
         <div className="flex items-center gap-3 text-white/70">
           <span className="px-3 py-1 border border-white/30 rounded">VISA</span>
           <span className="px-3 py-1 border border-white/30 rounded">Mastercard</span>

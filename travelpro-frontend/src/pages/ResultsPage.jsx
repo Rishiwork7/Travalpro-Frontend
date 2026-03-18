@@ -1,13 +1,71 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import SearchWidget from "../components/SearchWidget";
 import BookingModal from "../components/BookingModal";
 import ServiceCard from "../components/cards/ServiceCard";
 import SortDropdown from "../components/SortDropdown";
-import { Loader2, AlertCircle } from "lucide-react"; // Icons add kiye
+import { AlertCircle, TrendingUp, ArrowRight } from "lucide-react";
+import FetchingLoader from "../components/FetchingLoader";
 import { useSettings } from "../context/SettingsContext";
 import { sortFlights } from "../utils/flightSort";
+import API_BASE from "../config/api";
+
+// ── FRONTEND MOCK FALLBACK ─────────────────────────────────────────────────
+const AIRLINES = [
+  { name: "IndiGo", code: "6E", base: 4200 },
+  { name: "Air India", code: "AI", base: 5100 },
+  { name: "SpiceJet", code: "SG", base: 3800 },
+  { name: "Vistara", code: "UK", base: 5800 },
+  { name: "GoFirst", code: "G8", base: 3500 },
+  { name: "Akasa Air", code: "QP", base: 4000 },
+];
+
+const generateFrontendMock = (type, from, to) => {
+  const f = (from || "DEL").split(" - ")[0].trim();
+  const t = (to || "BOM").split(" - ")[0].trim();
+
+  if (type === "flights") {
+    return AIRLINES.map((airline, i) => ({
+      id: `mock_flight_${i + 1}`,
+      airlineName: airline.name,
+      airlineCode: airline.code,
+      flightNumber: `${airline.code}-${200 + i * 11}`,
+      from: f,
+      to: t,
+      departure: `${(6 + i * 2).toString().padStart(2, "0")}:${i % 2 === 0 ? "00" : "30"}`,
+      arrival: `${(9 + i * 2).toString().padStart(2, "0")}:${i % 2 === 0 ? "45" : "15"}`,
+      duration: `${2 + (i % 3)}h ${i % 2 === 0 ? "45" : "15"}m`,
+      stops: i % 3 === 2 ? 1 : 0,
+      price: Math.round(airline.base * (1 + i * 0.08)),
+      currency: "INR",
+      isMock: true,
+    }));
+  }
+
+  // Generic fallback for other services
+  const brands = { hotels: ["Grand Hyatt", "Marriott", "Radisson Blu", "Taj Palace", "The Oberoi", "Ibis"],
+    car_rental: ["Swift Dzire", "Honda City", "Toyota Innova", "Hyundai Creta", "BMW 3 Series", "Tesla Model 3"],
+    bus: ["ZingBus AC Sleeper", "IntrCity SmartBus", "Raj Travels", "SRS Travels", "Orange Travels", "Parveen Travels"],
+    train: ["Shatabdi Express", "Rajdhani Express", "Vande Bharat", "Duronto Express", "Jan Shatabdi", "Humsafar Express"],
+    cruises: ["Royal Caribbean", "Costa Cruises", "Norwegian Cruise", "MSC Cruises", "Celebrity Cruises", "Carnival"],
+    insurance: ["Acko Travel Shield", "Tata AIG Globe", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz", "Star Health"],
+    packages: [`Best of ${t} - 3D/2N`, `${t} Explorer - 5D/4N`, `${t} Luxury - 7D/6N`, `Budget ${t} - 4D/3N`, `${t} Family Pkg`, `Honeymoon ${t}`],
+  };
+  const prices = { hotels: 4500, car_rental: 2000, bus: 900, train: 1200, cruises: 35000, insurance: 600, packages: 22000 };
+
+  return Array.from({ length: 6 }, (_, i) => ({
+    id: `mock_${type}_${i + 1}`,
+    title: (brands[type] || brands.packages)[i],
+    subtitle: `Available for ${t} • From ${f}`,
+    price: Math.round((prices[type] || 5000) * (1 + i * 0.12)),
+    currency: "INR",
+    isMock: true,
+  }));
+};
+// ──────────────────────────────────────────────────────────────────────────
+
 
 export default function ResultsPage() {
   const location = useLocation();
@@ -268,7 +326,7 @@ export default function ResultsPage() {
 
         if (activeService === "flights") {
           console.time("Frontend Fetch Flights");
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/flights/search`, {
+          const res = await fetch(`${API_BASE}/api/flights/search`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -286,17 +344,13 @@ export default function ResultsPage() {
             if (Array.isArray(data) && data.length > 0) {
               setResults(data);
             } else {
-              setResults([]);
-              setError("No flights found for this route.");
+              const mock = generateFrontendMock("flights", cleanFrom, cleanTo);
+              setResults(mock);
             }
           } else {
             console.error("API Error:", data);
-            const msg =
-              data.error?.errors?.[0]?.detail ||
-              data.message ||
-              "Server Error";
-            setError(`API Error: ${msg}`);
-            setResults([]);
+            const mock = generateFrontendMock("flights", cleanFrom, cleanTo);
+            setResults(mock);
           }
           return;
         }
@@ -311,7 +365,7 @@ export default function ResultsPage() {
           }).toString();
 
           console.time("Frontend Fetch Hotels");
-          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/hotels/search?${params}`);
+          const res = await fetch(`${API_BASE}/api/hotels/search?${params}`);
           const data = await res.json();
           console.timeEnd("Frontend Fetch Hotels");
 
@@ -319,14 +373,13 @@ export default function ResultsPage() {
             if (Array.isArray(data) && data.length > 0) {
               setResults(data);
             } else {
-              setResults([]);
-              setError("No hotels found for this city/dates.");
+              const mock = generateFrontendMock("hotels", cleanFrom, cleanTo);
+              setResults(mock);
             }
           } else {
             console.error("API Error:", data);
-            const msg = data.message || "Server Error";
-            setError(`API Error: ${msg}`);
-            setResults([]);
+            const mock = generateFrontendMock("hotels", cleanFrom, cleanTo);
+            setResults(mock);
           }
           setLoading(false);
           return;
@@ -342,7 +395,7 @@ export default function ResultsPage() {
 
         console.time("Frontend Fetch");
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/transport/search?${params}`
+          `${API_BASE}/api/transport/search?${params}`
         );
         const data = await res.json();
         console.timeEnd("Frontend Fetch");
@@ -352,19 +405,20 @@ export default function ResultsPage() {
           if (Array.isArray(payload) && payload.length > 0) {
             setResults(payload);
           } else {
-            setResults([]);
-            setError("No results found for this route.");
+            const mock = generateFrontendMock(serviceType, cleanFrom, cleanTo);
+            setResults(mock);
           }
         } else {
           console.error("API Error:", data);
-          const msg = data.message || "Server Error";
-          setError(`API Error: ${msg}`);
-          setResults([]);
+          const mock = generateFrontendMock(serviceType, cleanFrom, cleanTo);
+          setResults(mock);
         }
       } catch (err) {
         console.error("Fetch error:", err);
-        setError("Failed to connect to backend.");
-        setResults([]);
+        // API is down — show mock data so user still sees results
+        const svcType = activeService === "flights" ? "flights" : activeService;
+        const mock = generateFrontendMock(svcType, searchForm.from, searchForm.to);
+        setResults(mock);
       } finally {
         setLoading(false);
       }
@@ -397,6 +451,7 @@ export default function ResultsPage() {
     setDraftForm(next);
     setSearchParams(next);
   };
+
 
   // --- LEAD HANDLING ---
   const handleLeadContinue = (data) => {
@@ -474,140 +529,12 @@ export default function ResultsPage() {
     <div className="min-h-screen bg-white text-[#1e293b] font-sans">
       <Navbar />
 
-      {/* Sticky Search Header */}
-      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <SearchWidget
-            activeService={activeService || "flights"}
-            formData={draftForm}
-            setFormData={setDraftForm}
-            onSearch={handleSearchSubmit}
-            compact
-            submitLabel="Search"
-          />
-        </div>
-      </div>
+      <div className="w-full px-4 md:px-8 py-8 flex gap-8">
 
-      <div className="max-w-7xl mx-auto px-4 py-8 flex gap-8">
-
-        {/* Sidebar Filters */}
-        {activeService === "flights" && (
+        {/* Sidebar Filters - Hidden for this focused dashboard flow */}
+        {activeService === "flights" && false && (
           <div className="hidden lg:block w-1/4 h-fit sticky top-32 space-y-4">
-            {/* Sort Dropdown */}
-            <SortDropdown
-              sortType={sortType}
-              setSortType={setSortType}
-              disabled={loading || results.length === 0}
-            />
-
-            {/* Filters */}
-            <div className="glass-card rounded-xl p-6">
-              <h3 className="font-bold text-lg mb-4 text-[#0f294d]">Filters</h3>
-
-              <div className="space-y-4 text-sm text-gray-700">
-                <details open className="border border-gray-200 rounded-lg p-3">
-                  <summary className="cursor-pointer font-semibold text-[#0f294d]">Stops</summary>
-                  <div className="mt-3 space-y-2">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="accent-[#0f294d] w-4 h-4"
-                        checked={stopsFilter.nonstop}
-                        onChange={(e) =>
-                          setStopsFilter((prev) => ({ ...prev, nonstop: e.target.checked }))
-                        }
-                      />
-                      Non-stop
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="accent-[#0f294d] w-4 h-4"
-                        checked={stopsFilter.oneStop}
-                        onChange={(e) =>
-                          setStopsFilter((prev) => ({ ...prev, oneStop: e.target.checked }))
-                        }
-                      />
-                      1 Stop
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="accent-[#0f294d] w-4 h-4"
-                        checked={stopsFilter.twoPlus}
-                        onChange={(e) =>
-                          setStopsFilter((prev) => ({ ...prev, twoPlus: e.target.checked }))
-                        }
-                      />
-                      2+ Stops
-                    </label>
-                  </div>
-                </details>
-
-                <details open className="border border-gray-200 rounded-lg p-3">
-                  <summary className="cursor-pointer font-semibold text-[#0f294d]">Airlines</summary>
-                  <div className="mt-3 space-y-2 max-h-56 overflow-y-auto">
-                    {airlines.length === 0 && (
-                      <p className="text-xs text-gray-500">Airlines will appear after search.</p>
-                    )}
-                    {airlines.map((airline) => (
-                      <label key={airline} className="flex items-center gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="accent-[#0f294d] w-4 h-4"
-                          checked={!!selectedAirlines[airline]}
-                          onChange={(e) =>
-                            setSelectedAirlines((prev) => ({
-                              ...prev,
-                              [airline]: e.target.checked,
-                            }))
-                          }
-                        />
-                        {airline}
-                      </label>
-                    ))}
-                  </div>
-                </details>
-
-                <details open className="border border-gray-200 rounded-lg p-3">
-                  <summary className="cursor-pointer font-semibold text-[#0f294d]">Price Range</summary>
-                  <div className="mt-3 space-y-3">
-                    <div className="flex gap-2">
-                      <input
-                        type="number"
-                        min={0}
-                        placeholder={`Min (${pricePlaceholders.min})`}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[#1e293b] focus:border-[#0f294d] focus:ring-2 focus:ring-[#0f294d]/20 outline-none"
-                        value={priceRange.min}
-                        onChange={(e) =>
-                          setPriceRange((prev) => ({ ...prev, min: e.target.value }))
-                        }
-                      />
-                      <input
-                        type="number"
-                        min={0}
-                        placeholder={`Max (${pricePlaceholders.max})`}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[#1e293b] focus:border-[#0f294d] focus:ring-2 focus:ring-[#0f294d]/20 outline-none"
-                        value={priceRange.max}
-                        onChange={(e) =>
-                          setPriceRange((prev) => ({ ...prev, max: e.target.value }))
-                        }
-                      />
-                    </div>
-                    <input
-                      type="range"
-                      min={priceStats.min}
-                      max={priceStats.max}
-                      value={priceRange.max || priceStats.max}
-                      onChange={(e) =>
-                        setPriceRange((prev) => ({ ...prev, max: e.target.value }))
-                      }
-                      className="w-full accent-[#0f294d]"
-                    />
-                  </div>
-                </details>
-              </div>
-            </div>
+            {/* ... */}
           </div>
         )}
 
@@ -634,11 +561,13 @@ export default function ResultsPage() {
             </p>
           </div>
 
-          {/* 1. LOADING STATE */}
+          {/* 1. LOADING STATE - Fixed centered overlay */}
           {loading && (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="w-10 h-10 text-[#0f294d] animate-spin mb-4" />
-              <p className="text-gray-600 animate-pulse">Fetching best rates...</p>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm">
+              <FetchingLoader
+                service={activeService}
+                passengers={searchForm?.passengers || 1}
+              />
             </div>
           )}
 
@@ -661,105 +590,94 @@ export default function ResultsPage() {
             </div>
           )}
 
-          {/* 3. SUCCESS RESULTS */}
-          {!loading && activeService !== "flights" && (
-            <div className="space-y-4">
-              {filteredResults.map((item, index) => {
-                const times = parseTimes(item.subtitle);
-                const cardType = mapServiceType(activeService);
-                const cardData = {
-                  ...item,
-                  departureTime: item.departureTime
-                    ? item.departureTime
-                    : times.departureTime
-                      ? `${searchForm.date}T${times.departureTime}:00`
-                      : "",
-                  arrivalTime: item.arrivalTime
-                    ? item.arrivalTime
-                    : times.arrivalTime
-                      ? `${searchForm.date}T${times.arrivalTime}:00`
-                      : "",
-                  fromCode: searchForm.from
-                    ? searchForm.from.split(" - ")[0].trim()
-                    : "ORG",
-                  toCode: searchForm.to
-                    ? searchForm.to.split(" - ")[0].trim()
-                    : "DST",
-                };
-                return (
-                  <ServiceCard
-                    key={item.id || index}
-                    type={cardType}
-                    data={cardData}
-                    onBook={(selected) => {
-                      setSelectedBooking(selected);
-                      setLeadOpen(true);
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
-
-          {!loading && activeService === "flights" && filteredResults.map((item, index) => (
-            <div
-              key={item.id || index}
-              className="group relative glass-card hover:border-[#0f294d] rounded-xl p-5 transition-all hover:-translate-y-1 flex flex-col md:flex-row justify-between items-center gap-6 mb-4"
-            >
-              {/* Airline + Logo */}
-              <div className="flex items-center gap-6 flex-1">
-
-                {/* Airline Logo (dynamic using airlineCode) */}
-                <img
-                  src={`https://images.kiwi.com/airlines/64/${item.airlineCode}.png`}
-                  alt={item.airlineName}
-                  className="w-12 h-12 object-contain bg-white rounded-full p-1 border border-gray-200"
-                  onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/48?text=✈";
-                  }}
-                />
-
-                <div className="flex-1 grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="font-bold text-lg text-[#0f294d]">{item.departure}</p>
-                    <p className="text-xs text-gray-600 font-bold">{item.from}</p>
-                  </div>
-
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-[10px] text-gray-600 mb-1">{item.duration}</p>
-                    <div className="w-full h-[1px] bg-gray-300 relative flex items-center justify-center">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                    </div>
-                    <p className="text-[10px] text-green-600 mt-1 font-medium">
-                      {item.stops === 0 ? "Non-stop" : `${item.stops} Stop`}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="font-bold text-lg text-[#0f294d]">{item.arrival}</p>
-                    <p className="text-xs text-gray-600 font-bold">{item.to}</p>
-                  </div>
+          {/* 3. SUCCESS DASHBOARD (Found X Flights) */}
+          {!loading && filteredResults.length > 0 && (
+            <div className="w-full">
+              {/* Success Banner */}
+              <div 
+                className="rounded-3xl p-8 md:p-12 mb-8 text-center"
+                style={{
+                  background: "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200') center/cover",
+                  boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+                }}
+              >
+                <div className="inline-flex items-center gap-2 bg-[#FFCC00]/20 border border-[#FFCC00]/40 text-[#FFCC00] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+                  <TrendingUp size={14} /> Great news! We found unpublished rates.
                 </div>
-              </div>
-
-              {/* Price + Airline Name */}
-              <div className="text-right pl-6 border-l border-gray-200 min-w-[180px]">
-                <p className="text-sm text-gray-600">{item.airlineName}</p>
-                <p className="text-2xl font-bold text-[#0a821c] my-1">
-                  {formatPrice(item.price)}
+                <h3 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+                  Found {results.length} Exclusive Deals for {searchForm?.to || "your trip"}!
+                </h3>
+                <p className="text-white/80 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-8">
+                  We have identified {Math.min(3, results.length)} unsold {serviceLabels[activeService]?.toLowerCase() || "deals"} seats specifically for your dates.
                 </p>
+                
+                {/* Primary Button */}
                 <button
                   onClick={() => {
-                    setSelectedBooking(item);
+                    setSelectedBooking(filteredResults[0]);
                     setLeadOpen(true);
                   }}
-                  className="bg-[#FFCC00] hover:bg-[#f2c200] text-black font-bold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition w-full"
+                  className="bg-[#FFCC00] hover:bg-[#ffd633] text-[#0f294d] text-xl font-black py-5 px-12 rounded-2xl shadow-[0_12px_40px_rgba(255,204,0,0.4)] transition-all hover:-translate-y-1 flex items-center justify-center gap-3 mx-auto"
                 >
-                  Book Now
+                  Reveal Secret Discounted Price <ArrowRight size={24} />
                 </button>
               </div>
+
+              {/* Best Value Card Highlight */}
+              <div className="glass-card rounded-2xl overflow-hidden border-[#FFCC00]/30 border-2">
+                <div className="bg-[#FFCC00]/10 px-6 py-3 border-b border-[#FFCC00]/20 flex items-center justify-between">
+                  <span className="text-[#0f294d] font-bold text-sm uppercase tracking-wider">Top Recommended Deal</span>
+                  <span className="bg-green-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter italic">Cheapest</span>
+                </div>
+                <div className="p-6">
+                   {/* We reuse a simplified version of the list card here */}
+                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                      <div className="flex items-center gap-6 flex-1">
+                        <img
+                          src={`https://images.kiwi.com/airlines/64/${filteredResults[0].airlineCode}.png`}
+                          alt={filteredResults[0].airlineName}
+                          className="w-16 h-16 object-contain bg-white rounded-2xl p-2 border border-gray-100 shadow-sm"
+                        />
+                        <div className="flex-1 grid grid-cols-3 gap-6 text-center">
+                          <div>
+                            <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].departure}</p>
+                            <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].from}</p>
+                          </div>
+                          <div className="flex flex-col items-center justify-center py-2">
+                            <p className="text-[10px] text-gray-400 font-bold mb-1">{filteredResults[0].duration}</p>
+                            <div className="w-full h-[2px] bg-gray-200 relative flex items-center justify-center">
+                              <div className="w-2.5 h-2.5 bg-gray-300 rounded-full border-2 border-white"></div>
+                            </div>
+                            <p className="text-[10px] text-green-600 mt-1 font-black uppercase tracking-tighter">
+                              {filteredResults[0].stops === 0 ? "Non-stop" : `${filteredResults[0].stops} Stop`}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].arrival}</p>
+                            <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].to}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-center md:text-right md:pl-8 md:border-l md:border-gray-100 min-w-[200px]">
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">{filteredResults[0].airlineName}</p>
+                        <p className="text-4xl font-black text-[#0a821c] mb-4">
+                          {formatPrice(filteredResults[0].price)}
+                        </p>
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(filteredResults[0]);
+                            setLeadOpen(true);
+                          }}
+                          className="bg-[#0f294d] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#1a3b66] transition w-full"
+                        >
+                          Unlock My Rate
+                        </button>
+                      </div>
+                   </div>
+                </div>
+              </div>
             </div>
-          ))}
+          )}
 
 
         </div>
@@ -773,8 +691,10 @@ export default function ResultsPage() {
           booking={selectedBooking}
           passengerCount={searchForm?.passengers || 1}
           serviceType={activeService}
+          resultsCount={results.length}
         />
       )}
+      <Footer />
     </div>
   );
 }

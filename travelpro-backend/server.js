@@ -16,7 +16,12 @@ app.use(helmet());
 const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://travalpro-frontend.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://travalpro-frontend.vercel.app",
+      "https://travalpro.com",
+      "https://www.travalpro.com",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
