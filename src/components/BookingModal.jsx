@@ -339,7 +339,7 @@ export default function BookingModal({
               }}
             >
               <Phone size={20} fill="white" />
-              +1-855-668-7787
+              855-668-7787
             </a>
           </div>
 
