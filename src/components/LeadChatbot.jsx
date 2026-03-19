@@ -189,7 +189,7 @@ export default function LeadChatbot({ onClose }) {
 
       if (res.ok) {
         await botReply("Excellent! I've saved your request. ✅");
-        await botReply("Our agents have special wholesale fares ready for you right now.", { showCall: true });
+        await botReply("Our travel experts will contact you shortly with the best hand-picked options.", { showCall: true });
         setStep(STEPS.SAVED);
       } else {
         throw new Error("Failed to save");
@@ -298,14 +298,7 @@ export default function LeadChatbot({ onClose }) {
         </div>
       )}
 
-      {/* Saving Overlay */}
-      {step === STEPS.SAVING && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center z-10 p-10 text-center">
-          <Loader2 className="w-12 h-12 text-[#0f294d] animate-spin mb-4" />
-          <h3 className="font-bold text-xl text-[#0f294d]">Securing Your Rates</h3>
-          <p className="text-sm text-gray-500 mt-2">Just a moment while we contact our travel specialists...</p>
-        </div>
-      )}
+      {/* Saving Overlay Removed */}
     </div>
   );
 }
