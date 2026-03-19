@@ -101,9 +101,9 @@ export default function LeadChatbot({ onClose }) {
     setIsTyping(true);
     
     try {
-      // Basic extraction of email/phone
       const email = data.contact.includes("@") ? data.contact : `chat_${Date.now()}@temp.com`;
-      const phone = data.contact.match(/\d+/) ? data.contact : "N/A";
+      let validPhone = data.contact.replace(/\D/g, "");
+      if (validPhone.length < 10) validPhone = "0000000000";
 
       const res = await fetch(`${API_BASE}/api/leads`, {
         method: "POST",
@@ -111,10 +111,12 @@ export default function LeadChatbot({ onClose }) {
         body: JSON.stringify({
           name: data.name,
           email: email,
-          phone: phone,
+          phone: validPhone,
           service: data.service,
-          query: `Chatbot Details: ${data.details}`,
-          source: "chatbot",
+          bookingDetails: {
+            query: data.details,
+            source: "chatbot"
+          }
         }),
       });
 
