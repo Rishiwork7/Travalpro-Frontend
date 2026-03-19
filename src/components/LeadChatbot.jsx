@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Send, User, Bot, Sparkles, Phone, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Send, User, Bot, Sparkles, Phone, CheckCircle, ArrowRight, Loader2, X } from "lucide-react";
 import API_BASE from "../config/api";
 
 const STEPS = {
