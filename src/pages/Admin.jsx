@@ -11,29 +11,39 @@ export default function Admin() {
   const [passwordInput, setPasswordInput] = useState("");
   const { formatPrice } = useSettings();
 
-  const ADMIN_PASSWORD = "travalpro123";
-
-  const handleLogin = () => {
-    if (passwordInput === ADMIN_PASSWORD) {
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/leads`, {
+        headers: { "x-admin-token": passwordInput },
+      });
+      if (!res.ok) {
+        throw new Error("Incorrect password");
+      }
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setLeads(data);
+      } else {
+        setLeads([]);
+      }
       setAuthorized(true);
-      fetchLeads();
-    } else {
+    } catch (err) {
       alert("Incorrect password");
     }
+    setLoading(false);
   };
 
   const fetchLeads = async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/leads`, {
-        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
+        headers: { "x-admin-token": passwordInput },
       });
       if (!res.ok) throw new Error("Unauthorized");
       const data = await res.json();
       if (Array.isArray(data)) {
         setLeads(data);
       } else {
-        console.error("Leads data is not an array:", data);
         setLeads([]);
       }
     } catch (err) {
@@ -51,7 +61,7 @@ export default function Admin() {
     try {
       const res = await fetch(`${API_BASE}/api/leads/${id}`, {
         method: "DELETE",
-        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
+        headers: { "x-admin-token": passwordInput },
       });
 
       if (res.ok) {
@@ -74,7 +84,7 @@ export default function Admin() {
     try {
       const res = await fetch(`${API_BASE}/api/leads/clear-all`, {
         method: "DELETE",
-        headers: { "x-admin-token": passwordInput || ADMIN_PASSWORD },
+        headers: { "x-admin-token": passwordInput },
       });
 
       if (res.ok) {
