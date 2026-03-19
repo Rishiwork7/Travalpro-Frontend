@@ -118,7 +118,7 @@ export default function Navbar() {
             <span className="block text-[#0f294d] font-semibold">Flights</span>
             <span className="block text-[#0f294d] font-semibold">Hotels</span>
             <span className="block text-[#0f294d] font-semibold">Packages</span>
-            <a href="tel:+18885550188" className="block text-[#0f294d] hover:text-[#FFCC00] transition">
+            <a href="tel:+1-855-668-7787" className="block text-[#0f294d] hover:text-[#FFCC00] transition">
               24/7 Support: 855-668-7787
             </a>
             <div className="text-[#0f294d] font-semibold">

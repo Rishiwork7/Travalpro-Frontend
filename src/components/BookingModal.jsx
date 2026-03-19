@@ -322,7 +322,7 @@ export default function BookingModal({
               Skip the form and lock in this rate instantly.
             </p>
             <a
-              href="tel:+18005180250"
+              href="tel:+1-855-668-7787"
               style={{
                 display: "flex",
                 alignItems: "center",

@@ -47,7 +47,7 @@ export default function MaintenanceModal({
         </div>
 
         <a
-          href="tel:+18885550188"
+          href="tel:+1-855-668-7787"
           className="w-full bg-[#FFCC00] text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 mb-3 hover:bg-[#f2c200] transition"
         >
           <Phone size={18} />
