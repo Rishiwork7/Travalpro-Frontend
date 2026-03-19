@@ -46,221 +46,115 @@ export default function Results({
       {results.map((item) => (
         <div
           key={item.id}
-          className="bg-white border border-gray-200 text-gray-900 p-6 rounded-2xl shadow-md hover:shadow-xl transition"
+          className="bg-white border border-gray-200 text-gray-900 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition"
         >
+          <div className="flex flex-col md:flex-row min-h-[160px]">
+            {/* Image Section */}
+            {(item.image || activeService === "hotels" || activeService === "flights") && (
+              <div className="w-full md:w-64 h-48 md:h-auto flex-shrink-0">
+                <img
+                  src={item.image || "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600"}
+                  alt={item.title || item.hotelName || "Deal"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600";
+                  }}
+                />
+              </div>
+            )}
 
-          {/* ================= FLIGHTS ================= */}
-          {activeService === "flights" && (
-            <div className="flex justify-between items-center">
+            {/* Content Section */}
+            <div className="flex-1 p-6 flex flex-col justify-between">
+              
+              {/* Service Specific Info */}
+              <div>
+                {activeService === "flights" && (
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-8">
+                      <div>
+                        <p className="font-bold text-lg text-black">
+                          {item.airlineName} {item.flightNumber}
+                        </p>  
+                        <p className="text-xs text-gray-600">
+                          {item.from} → {item.to}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="font-bold text-black">{formatTime(item.departureTime)}</p>
+                        <p className="text-xs text-gray-600">{item.from}</p>
+                      </div>
+                      <div className="text-center hidden sm:block">
+                        <p className="text-xs text-gray-600">{formatDuration(item.duration)}</p>
+                        <div className="w-16 h-px bg-gray-300 my-1"></div>
+                        <p className="text-xs text-gray-600">Non-stop</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="font-bold text-black">{formatTime(item.arrivalTime)}</p>
+                        <p className="text-xs text-gray-600">{item.to}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-              <div className="flex items-center gap-8">
-                
+                {activeService === "hotels" && (
+                  <div>
+                    <p className="font-bold text-xl text-black">{item.hotelName}</p>
+                    <p className="text-sm text-gray-600 mt-1">{item.city}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                       Check-in: {item.checkIn} | Check-out: {item.checkOut}
+                    </p>
+                  </div>
+                )}
+
+                {(activeService === "trains" || activeService === "buses") && (
+                  <div>
+                    <p className="font-bold text-lg text-black">{item.trainName || item.operator || "Express Service"}</p>
+                    <p className="text-sm text-gray-600">{item.from} → {item.to}</p>
+                    <p className="text-sm text-gray-500 mt-1">Departure: {item.departureTime || "--"}</p>
+                  </div>
+                )}
+
+                {activeService === "cabs" && (
+                  <div>
+                    <p className="font-bold text-lg text-black">{item.vehicleType || "Sedan"}</p>
+                    <p className="text-sm text-gray-600">{item.from} → {item.to}</p>
+                  </div>
+                )}
+
+                {activeService === "cruises" && (
+                  <div>
+                    <p className="font-bold text-lg text-black">{item.cruiseName}</p>
+                    <p className="text-sm text-gray-600 font-medium">Departure Port: {item.departurePort}</p>
+                  </div>
+                )}
+
+                {activeService === "insurance" && (
+                  <div>
+                    <p className="font-bold text-lg text-black">{item.category || "Insurance Plan"}</p>
+                    <p className="text-sm text-gray-600">Coverage: {item.coverage}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Price and Action */}
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
                 <div>
-                  <p className="font-bold text-lg text-black">
-                    {item.airlineName} {item.flightNumber}
-                  </p>  
-                  <p className="text-xs text-gray-600">
-                    {item.from} → {item.to}
+                  <p className="text-2xl font-bold text-[#0a821c]">
+                    {formatPrice(item.price)}
+                    {activeService === "hotels" && <span className="text-xs text-gray-500 ml-1">/ night</span>}
                   </p>
+                  <p className="text-[10px] text-gray-400">Taxes & Fees included</p>
                 </div>
-
-                <div className="text-center">
-                  <p className="font-bold text-black">
-                    {formatTime(item.departureTime)}
-                  </p>
-                  <p className="text-xs text-gray-600">{item.from}</p>
-                </div>
-
-                <div className="text-center">
-                  <p className="text-xs text-gray-600">
-                    {formatDuration(item.duration)}
-                  </p>
-                  <div className="w-20 h-px bg-gray-300 my-1"></div>
-                  <p className="text-xs text-gray-600">Non-stop</p>
-                </div>
-
-                <div className="text-center">
-                  <p className="font-bold text-black">
-                    {formatTime(item.arrivalTime)}
-                  </p>
-                  <p className="text-xs text-gray-600">{item.to}</p>
-                </div>
-
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
                 <button
                   onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold transition shadow-md"
+                  className="bg-[#FFCC00] hover:bg-[#f2c200] text-black px-8 py-2.5 rounded-full font-bold transition shadow-md hover:scale-105"
                 >
                   Book Now
                 </button>
               </div>
+
             </div>
-          )}
-
-          {/* ================= TRAINS ================= */}
-          {activeService === "trains" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">
-                  {item.trainName || "Express Train"}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {item.from} → {item.to}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Departure: {item.departureTime || "--"}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ================= BUSES ================= */}
-          {activeService === "buses" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">
-                  {item.operator || "Premium Bus"}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {item.from} → {item.to}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Departure: {item.departureTime || "--"}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ================= HOTELS ================= */}
-          {activeService === "hotels" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">{item.hotelName}</p>
-                <p className="text-sm text-gray-600">{item.city}</p>
-                <p className="text-sm text-gray-500">
-                  {item.checkIn} - {item.checkOut}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)} / night
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ================= CABS ================= */}
-          {activeService === "cabs" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">
-                  {item.vehicleType || "Sedan"}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {item.from} → {item.to}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ================= CRUISES ================= */}
-          {activeService === "cruises" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">{item.cruiseName}</p>
-                <p className="text-sm text-gray-600">
-                  Departure: {item.departurePort}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Book Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ================= INSURANCE ================= */}
-          {activeService === "insurance" && (
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-bold text-lg text-black">
-                  {item.category || "Insurance Plan"}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Coverage: {item.coverage}
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-xl font-bold text-[#0a821c]">
-                  {formatPrice(item.price)}
-                </p>
-                <button
-                  onClick={() => onBook(item)}
-                  className="mt-2 bg-[#FFCC00] hover:bg-[#f2c200] text-black px-6 py-2 rounded-full font-semibold shadow-md"
-                >
-                  Get Policy
-                </button>
-              </div>
-            </div>
-          )}
-
+          </div>
         </div>
       ))}
 
