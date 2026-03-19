@@ -43,7 +43,7 @@ export default function Home() {
       price: 295,
       tags: ["Direct Flight", "Refundable"],
       image:
-        "https://images.unsplash.com/photo-1512453979798-5ea90b2009f4?q=80&w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1518684079105-312e97e1743f?q=80&w=800&auto=format&fit=crop",
     },
     {
       from: "BOM",
