@@ -206,10 +206,17 @@ export default function Admin() {
               <div className="flex justify-between items-center mb-4">
 
                 <div>
-                  <span className="text-[#d13b1a] font-semibold uppercase text-sm">
-                    {lead.service}
-                  </span>
-                  <p className="text-xs text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#d13b1a] font-semibold uppercase text-sm">
+                      {lead.service}
+                    </span>
+                    {lead.source === "chatbot" ? (
+                      <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Chatbot</span>
+                    ) : (
+                      <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Website</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1">
                     {new Date(lead.createdAt).toLocaleString()}
                   </p>
                 </div>
@@ -238,24 +245,29 @@ export default function Admin() {
               <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
 
                 <div>
-                  <p><strong className="text-[#0f294d]">Email:</strong> {lead.email}</p>
-                  <p><strong className="text-[#0f294d]">Phone:</strong> {lead.phone}</p>
+                  <p><strong className="text-[#0f294d]">Email:</strong> {lead.email || "N/A"}</p>
+                  <p><strong className="text-[#0f294d]">Phone:</strong> {lead.phone || "N/A"}</p>
                 </div>
 
                 <div>
-                  <p><strong className="text-[#0f294d]">Booking:</strong></p>
+                  <p><strong className="text-[#0f294d]">{lead.source === "chatbot" ? "Query:" : "Booking:"}</strong></p>
                   <p className="text-gray-600 text-xs mt-1">
-                    {lead.bookingDetails?.title ||
+                    {lead.bookingDetails?.query || 
+                      lead.bookingDetails?.title ||
                       lead.bookingDetails?.airline ||
                       lead.flightId ||
                       "Details Available"}
                   </p>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Passengers: {lead.passengers?.length || 0}
-                  </p>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Total: <span className="text-[#0a821c] font-semibold">{formatPrice(lead.totalAmount || 0)}</span>
-                  </p>
+                  {lead.source !== "chatbot" && (
+                    <>
+                      <p className="text-gray-600 text-xs mt-1">
+                        Passengers: {lead.passengers?.length || 0}
+                      </p>
+                      <p className="text-gray-600 text-xs mt-1">
+                        Total: <span className="text-[#0a821c] font-semibold">{formatPrice(lead.totalAmount || 0)}</span>
+                      </p>
+                    </>
+                  )}
                 </div>
 
               </div>

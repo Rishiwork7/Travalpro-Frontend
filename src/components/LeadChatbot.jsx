@@ -101,18 +101,26 @@ export default function LeadChatbot({ onClose }) {
     setIsTyping(true);
     
     try {
-      const email = data.contact.includes("@") ? data.contact : `chat_${Date.now()}@temp.com`;
-      let validPhone = data.contact.replace(/\D/g, "");
-      if (validPhone.length < 10) validPhone = "0000000000";
+      let email = undefined;
+      let phone = undefined;
+      const contactVal = data.contact.trim();
+      if (contactVal.includes('@')) {
+          email = contactVal.split(' ').find(part => part.includes('@')) || contactVal;
+          const phoneMatch = contactVal.replace(email, '').match(/\d{7,}/);
+          if (phoneMatch) phone = phoneMatch[0];
+      } else {
+          phone = contactVal;
+      }
 
       const res = await fetch(`${API_BASE}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: data.name,
-          email: email,
-          phone: validPhone,
+          ...(email && { email }),
+          ...(phone && { phone }),
           service: data.service,
+          source: "chatbot",
           bookingDetails: {
             query: data.details,
             source: "chatbot"
