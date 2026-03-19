@@ -5,24 +5,20 @@ import API_BASE from "../config/api";
 const STEPS = {
   INTRO: 0,
   ASK_NAME: 1,
-  ASK_SERVICE: 2,
-  ASK_DETAILS: 3,
-  ASK_FLIGHT_DATE: 10,
-  ASK_FLIGHT_FROM: 11,
-  ASK_FLIGHT_TO: 12,
-  ASK_HOTEL_CITY: 20,
-  ASK_HOTEL_CHECKIN: 21,
-  ASK_HOTEL_CHECKOUT: 22,
-  ASK_CONTACT: 100,
-  SAVING: 101,
-  SAVED: 102,
+  ASK_DOB: 2,
+  ASK_SERVICE: 3,
+  ASK_CONTACT: 4,
+  READY_TO_SUBMIT: 5,
+  SAVING: 6,
+  SAVED: 7,
 };
 
 const SERVICES = [
-  { id: "flights", label: "Flights", icon: "✈️" },
-  { id: "hotels", label: "Hotels", icon: "🏨" },
-  { id: "cabs", label: "Car Rentals", icon: "🚗" },
-  { id: "packages", label: "Holidays", icon: "🏝️" },
+  { id: "bus", label: "Bus", icon: "🚌" },
+  { id: "flights", label: "Flight", icon: "✈️" },
+  { id: "car-rental", label: "Car Rental", icon: "🚗" },
+  { id: "cruise", label: "Cruise", icon: "🛳️" },
+  { id: "insurance", label: "Insurance", icon: "🛡️" },
 ];
 
 export default function LeadChatbot({ onClose }) {
@@ -32,14 +28,8 @@ export default function LeadChatbot({ onClose }) {
   const [isTyping, setIsTyping] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    dob: "",
     service: "",
-    details: "",
-    flightDate: "",
-    flightFrom: "",
-    flightTo: "",
-    hotelCity: "",
-    hotelCheckin: "",
-    hotelCheckout: "",
     contact: "",
   });
   
@@ -82,78 +72,37 @@ export default function LeadChatbot({ onClose }) {
     if (step === STEPS.ASK_NAME) {
       setFormData((prev) => ({ ...prev, name: userText }));
       await botReply(`Nice to meet you, ${userText}! 😊`);
+      await botReply("What is your Date of Birth? (e.g., DD/MM/YYYY)");
+      setStep(STEPS.ASK_DOB);
+    } 
+    else if (step === STEPS.ASK_DOB) {
+      setFormData((prev) => ({ ...prev, dob: userText }));
       await botReply("Which service can I help you with today?", { showServices: true });
       setStep(STEPS.ASK_SERVICE);
-    } 
-    // Flight Logic
-    else if (step === STEPS.ASK_FLIGHT_DATE) {
-      setFormData((prev) => ({ ...prev, flightDate: userText }));
-      await botReply("Got it. Where are you flying from?");
-      setStep(STEPS.ASK_FLIGHT_FROM);
     }
-    else if (step === STEPS.ASK_FLIGHT_FROM) {
-      setFormData((prev) => ({ ...prev, flightFrom: userText }));
-      await botReply("And where are you flying to?");
-      setStep(STEPS.ASK_FLIGHT_TO);
-    }
-    else if (step === STEPS.ASK_FLIGHT_TO) {
-      setFormData((prev) => ({ ...prev, flightTo: userText }));
-      await botReply("Perfect. Lastly, please share your Email or Mobile Number so our expert can send you the best quotes.");
-      setStep(STEPS.ASK_CONTACT);
-    }
-    // Hotel Logic
-    else if (step === STEPS.ASK_HOTEL_CITY) {
-      setFormData((prev) => ({ ...prev, hotelCity: userText }));
-      await botReply("Great! When is your check-in date? (e.g. YYYY-MM-DD)");
-      setStep(STEPS.ASK_HOTEL_CHECKIN);
-    }
-    else if (step === STEPS.ASK_HOTEL_CHECKIN) {
-      setFormData((prev) => ({ ...prev, hotelCheckin: userText }));
-      await botReply("And your check-out date?");
-      setStep(STEPS.ASK_HOTEL_CHECKOUT);
-    }
-    else if (step === STEPS.ASK_HOTEL_CHECKOUT) {
-      setFormData((prev) => ({ ...prev, hotelCheckout: userText }));
-      await botReply("Perfect. Lastly, please share your Email or Mobile Number so our expert can send you the best rates.");
-      setStep(STEPS.ASK_CONTACT);
-    }
-    // Generic Logic
-    else if (step === STEPS.ASK_DETAILS) {
-      setFormData((prev) => ({ ...prev, details: userText }));
-      await botReply("Perfect. Lastly, please share your Email or Mobile Number so our expert can send you the best quotes.");
-      setStep(STEPS.ASK_CONTACT);
-    }
-    // Final Contact
+    // handleServiceSelect routes ASK_SERVICE to ASK_CONTACT
     else if (step === STEPS.ASK_CONTACT) {
       setFormData((prev) => ({ ...prev, contact: userText }));
-      saveLead({ ...formData, contact: userText });
+      await botReply("Thank you! Please click the button below to submit your details.", { showSubmit: true });
+      setStep(STEPS.READY_TO_SUBMIT);
     }
   };
 
   const handleServiceSelect = async (service) => {
     setMessages((prev) => [...prev, { role: "user", text: `I'm interested in ${service.label}.` }]);
     setFormData((prev) => ({ ...prev, service: service.id }));
-    
-    if (service.id === "flights") {
-        await botReply("Excellent choice. When are you planning to travel? (e.g. YYYY-MM-DD)");
-        setStep(STEPS.ASK_FLIGHT_DATE);
-    } else if (service.id === "hotels") {
-        await botReply("Nice! Which city are you looking to stay in?");
-        setStep(STEPS.ASK_HOTEL_CITY);
-    } else {
-        await botReply("Great! Where are you planning to go?");
-        setStep(STEPS.ASK_DETAILS);
-    }
+    await botReply("Please share your Email or Mobile Number.");
+    setStep(STEPS.ASK_CONTACT);
   };
 
-  const saveLead = async (data) => {
+  const saveLead = async () => {
     setStep(STEPS.SAVING);
     setIsTyping(true);
     
     try {
       let email = undefined;
       let phone = undefined;
-      const contactVal = data.contact.trim();
+      const contactVal = formData.contact.trim();
       if (contactVal.includes('@')) {
           email = contactVal.split(' ').find(part => part.includes('@')) || contactVal;
           const phoneMatch = contactVal.replace(email, '').match(/\d{7,}/);
@@ -162,26 +111,17 @@ export default function LeadChatbot({ onClose }) {
           phone = contactVal;
       }
 
-      let compiledQuery = "Details missing";
-      if (data.service === "flights") {
-          compiledQuery = `Date: ${data.flightDate} | From: ${data.flightFrom} | To: ${data.flightTo}`;
-      } else if (data.service === "hotels") {
-          compiledQuery = `City: ${data.hotelCity} | Check-in: ${data.hotelCheckin} | Check-out: ${data.hotelCheckout}`;
-      } else {
-          compiledQuery = `Chatbot Details: ${data.details}`;
-      }
-
       const res = await fetch(`${API_BASE}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.name,
+          name: formData.name,
           ...(email && { email }),
           ...(phone && { phone }),
-          service: data.service,
+          service: formData.service,
           source: "chatbot",
           bookingDetails: {
-            query: compiledQuery,
+            query: `DOB: ${formData.dob}`,
             source: "chatbot"
           }
         }),
@@ -248,6 +188,18 @@ export default function LeadChatbot({ onClose }) {
                 </div>
               )}
 
+              {/* Submit Button */}
+              {msg.showSubmit && step === STEPS.READY_TO_SUBMIT && (
+                <div className="mt-4">
+                  <button
+                    onClick={saveLead}
+                    className="w-full bg-[#d13b1a] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#b93216] transition shadow-md"
+                  >
+                    Submit Details <CheckCircle size={16} />
+                  </button>
+                </div>
+              )}
+
               {/* Call Button */}
               {msg.showCall && (
                 <div className="mt-5 space-y-3">
@@ -276,7 +228,7 @@ export default function LeadChatbot({ onClose }) {
       </div>
 
       {/* Input */}
-      {step !== STEPS.SAVING && step !== STEPS.SAVED && step !== STEPS.ASK_SERVICE && (
+      {step !== STEPS.SAVING && step !== STEPS.SAVED && step !== STEPS.READY_TO_SUBMIT && step !== STEPS.ASK_SERVICE && (
         <div className="p-4 bg-white border-t border-gray-100 shadow-[0_-4px_15px_rgba(0,0,0,0.02)]">
           <div className="flex items-center gap-2 bg-gray-50 rounded-2xl px-4 py-2 border border-gray-100 focus-within:ring-2 focus-within:ring-[#0f294d]/10 transition-all">
             <input
@@ -297,8 +249,6 @@ export default function LeadChatbot({ onClose }) {
           </div>
         </div>
       )}
-
-      {/* Saving Overlay Removed */}
     </div>
   );
 }
