@@ -38,7 +38,7 @@ export default function MaintenanceModal({
           </p>
 
           <p className="text-2xl font-bold text-black mb-1">
-            1-888-555-0188
+            +1-855-668-7787
           </p>
 
           <p className="text-xs text-gray-500">

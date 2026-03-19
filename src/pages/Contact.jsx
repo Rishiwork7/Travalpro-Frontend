@@ -21,7 +21,7 @@ export default function Contact() {
         <div className="glass-card rounded-xl p-6">
           <h2 className="text-xl font-semibold text-[#0f294d]">Call</h2>
           <p className="mt-2 text-gray-700">24/7 Support</p>
-          <p className="mt-2 text-[#0f294d] font-bold">1-888-555-0188</p>
+          <p className="mt-2 text-[#0f294d] font-bold">+1-855-668-7787</p>
         </div>
 
         <div className="glass-card rounded-xl p-6">

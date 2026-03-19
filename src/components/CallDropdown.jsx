@@ -75,11 +75,11 @@ export default function CallDropdown() {
           </div>
           <div className="px-4 pb-4">
             <a
-              href="tel:000-800-050-3540"
+              href="tel:+1-855-668-7787"
               className="w-full bg-[#0a821c] text-white font-bold text-center py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-[#0a6f18] transition"
             >
               <Phone size={18} />
-              000-800-050-3540
+              +1-855-668-7787
             </a>
             <p className="text-xs text-gray-500 text-center mt-2">
               Call now to lock these rates!

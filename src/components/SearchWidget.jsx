@@ -396,7 +396,7 @@ export default function SearchWidget({
                     href="tel:18885550188"
                     className="text-2xl font-bold text-[#0f294d] hover:text-[#d13b1a] transition"
                   >
-                    1-888-555-0188
+                    +1-855-668-7787
                   </a>
                 </div>
               </div>
