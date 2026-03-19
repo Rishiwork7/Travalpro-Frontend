@@ -9,10 +9,13 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
+import HelpAssistant from "./components/HelpAssistant";
+
 function App() {
   return (
     <Router>
       <CallPopup />
+      <HelpAssistant />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/results" element={<ResultsPage />} />

@@ -1,6 +1,7 @@
 import ScrollingTicker from "./ScrollingTicker";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import HelpAssistant from "./HelpAssistant";
 
 export default function Layout({ children }) {
   return (
@@ -11,6 +12,7 @@ export default function Layout({ children }) {
         {children}
       </main>
       <Footer />
+      <HelpAssistant />
     </div>
   );
 }
