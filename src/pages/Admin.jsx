@@ -230,14 +230,12 @@ export default function Admin() {
                 <div>
                   <p><strong className="text-[#0f294d]">Email:</strong> {lead.email}</p>
                   <p><strong className="text-[#0f294d]">Phone:</strong> {lead.phone}</p>
-                  {lead.dob && <p><strong className="text-[#0f294d]">DOB:</strong> {lead.dob}</p>}
                 </div>
 
                 <div>
                   <p><strong className="text-[#0f294d]">Booking:</strong></p>
                   <p className="text-gray-600 text-xs mt-1">
-                    {lead.bookingDetails?.query ||
-                      lead.bookingDetails?.title ||
+                    {lead.bookingDetails?.title ||
                       lead.bookingDetails?.airline ||
                       lead.flightId ||
                       "Details Available"}
