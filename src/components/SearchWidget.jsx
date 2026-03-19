@@ -2,6 +2,7 @@ import { MapPin, Calendar, Users, Search, Headset } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import airportsRaw from "../data/airports.json";
+import API_BASE from "../config/api";
 
 const AIRPORTS = airportsRaw
   .filter((a) => a.iata_code && a.name)
@@ -103,7 +104,7 @@ export default function SearchWidget({
     }
     try {
       const response = await fetch(
-        `https://travalpro-backend-1.onrender.com/api/search/hotel-cities?keyword=${encodeURIComponent(keyword)}`
+        `${API_BASE}/api/search/hotel-cities?keyword=${encodeURIComponent(keyword)}`
       );
       const data = await response.json();
       setCityOptions(Array.isArray(data) ? data : []);

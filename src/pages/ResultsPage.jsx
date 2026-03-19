@@ -11,6 +11,7 @@ import FetchingLoader from "../components/FetchingLoader";
 import { useSettings } from "../context/SettingsContext";
 import { sortFlights } from "../utils/flightSort";
 import API_BASE from "../config/api";
+import { MapPin, Star, CheckCircle } from "lucide-react";
 
 // ── FRONTEND MOCK FALLBACK ─────────────────────────────────────────────────
 const AIRLINES = [
@@ -597,7 +598,9 @@ export default function ResultsPage() {
               <div 
                 className="rounded-3xl p-8 md:p-12 mb-8 text-center"
                 style={{
-                  background: "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200') center/cover",
+                  background: activeService === "hotels" 
+                    ? "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200') center/cover"
+                    : "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200') center/cover",
                   boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
                 }}
               >
@@ -605,10 +608,10 @@ export default function ResultsPage() {
                   <TrendingUp size={14} /> Great news! We found unpublished rates.
                 </div>
                 <h3 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-                  Found {results.length} Exclusive Deals for {searchForm?.to || "your trip"}!
+                  Found {results.length} Exclusive Deals for {searchForm?.to || searchForm?.city || "your trip"}!
                 </h3>
                 <p className="text-white/80 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-8">
-                  We have identified {Math.min(3, results.length)} unsold {serviceLabels[activeService]?.toLowerCase() || "deals"} seats specifically for your dates.
+                  We have identified {Math.min(3, results.length)} unsold {activeService === 'hotels' ? 'hotel rooms' : (serviceLabels[activeService]?.toLowerCase() || "deals")} specifically for your dates.
                 </p>
                 
                 {/* Primary Button */}
@@ -626,43 +629,75 @@ export default function ResultsPage() {
               {/* Best Value Card Highlight */}
               <div className="glass-card rounded-2xl overflow-hidden border-[#FFCC00]/30 border-2">
                 <div className="bg-[#FFCC00]/10 px-6 py-3 border-b border-[#FFCC00]/20 flex items-center justify-between">
-                  <span className="text-[#0f294d] font-bold text-sm uppercase tracking-wider">Top Recommended Deal</span>
+                  <span className="text-[#0f294d] font-bold text-sm uppercase tracking-wider">Top Recommended {serviceLabels[activeService] || "Deal"}</span>
                   <span className="bg-green-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter italic">Cheapest</span>
                 </div>
                 <div className="p-6">
-                   {/* We reuse a simplified version of the list card here */}
                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                      <div className="flex items-center gap-6 flex-1">
-                        <img
-                          src={`https://images.kiwi.com/airlines/64/${filteredResults[0].airlineCode}.png`}
-                          alt={filteredResults[0].airlineName}
-                          className="w-16 h-16 object-contain bg-white rounded-2xl p-2 border border-gray-100 shadow-sm"
-                        />
-                        <div className="flex-1 grid grid-cols-3 gap-6 text-center">
-                          <div>
-                            <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].departure}</p>
-                            <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].from}</p>
-                          </div>
-                          <div className="flex flex-col items-center justify-center py-2">
-                            <p className="text-[10px] text-gray-400 font-bold mb-1">{filteredResults[0].duration}</p>
-                            <div className="w-full h-[2px] bg-gray-200 relative flex items-center justify-center">
-                              <div className="w-2.5 h-2.5 bg-gray-300 rounded-full border-2 border-white"></div>
-                            </div>
-                            <p className="text-[10px] text-green-600 mt-1 font-black uppercase tracking-tighter">
-                              {filteredResults[0].stops === 0 ? "Non-stop" : `${filteredResults[0].stops} Stop`}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].arrival}</p>
-                            <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].to}</p>
-                          </div>
+                      <div className="flex flex-col md:flex-row items-center gap-6 flex-1">
+                        <div className="w-full md:w-48 h-32 relative rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
+                          <img
+                            src={activeService === "flights" 
+                              ? `https://images.kiwi.com/airlines/64/${filteredResults[0].airlineCode}.png`
+                              : (filteredResults[0].image || "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600")}
+                            alt={filteredResults[0].airlineName || filteredResults[0].title}
+                            className={`w-full h-full ${activeService === 'flights' ? 'object-contain p-4' : 'object-cover'}`}
+                          />
                         </div>
+
+                        {activeService === "flights" ? (
+                          <div className="flex-1 grid grid-cols-3 gap-6 text-center w-full">
+                            <div>
+                              <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].departure}</p>
+                              <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].from}</p>
+                            </div>
+                            <div className="flex flex-col items-center justify-center py-2">
+                              <p className="text-[10px] text-gray-400 font-bold mb-1">{filteredResults[0].duration}</p>
+                              <div className="w-full h-[2px] bg-gray-200 relative flex items-center justify-center">
+                                <div className="w-2.5 h-2.5 bg-gray-300 rounded-full border-2 border-white"></div>
+                              </div>
+                              <p className="text-[10px] text-green-600 mt-1 font-black uppercase tracking-tighter">
+                                {filteredResults[0].stops === 0 ? "Non-stop" : `${filteredResults[0].stops} Stop`}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].arrival}</p>
+                              <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].to}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex-1 text-center md:text-left">
+                            <h4 className="text-2xl font-black text-[#0f294d] mb-1">
+                              {filteredResults[0].title || filteredResults[0].operatorName}
+                            </h4>
+                            <p className="text-sm text-gray-500 font-bold flex items-center justify-center md:justify-start gap-1">
+                              <MapPin size={14} /> {filteredResults[0].subtitle || filteredResults[0].address || "City Center Location"}
+                            </p>
+                            <div className="mt-3 flex items-center justify-center md:justify-start gap-4">
+                              {filteredResults[0].rating && (
+                                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
+                                  <Star size={12} fill="currentColor" /> {filteredResults[0].rating}
+                                </div>
+                              )}
+                              <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
+                                <CheckCircle size={12} /> Instant Confirmation
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                       <div className="text-center md:text-right md:pl-8 md:border-l md:border-gray-100 min-w-[200px]">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">{filteredResults[0].airlineName}</p>
-                        <p className="text-4xl font-black text-[#0a821c] mb-4">
-                          {formatPrice(filteredResults[0].price)}
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">
+                          {activeService === "flights" ? filteredResults[0].airlineName : "Exclusive Rate"}
                         </p>
+                        <div className="mb-4">
+                          <p className="text-4xl font-black text-[#0a821c]">
+                            {formatPrice(filteredResults[0].price)}
+                          </p>
+                          <p className="text-[10px] text-gray-400 font-bold uppercase">
+                            {activeService === "hotels" ? "Per Night" : "Total for All Travelers"}
+                          </p>
+                        </div>
                         <button
                           onClick={() => {
                             setSelectedBooking(filteredResults[0]);
