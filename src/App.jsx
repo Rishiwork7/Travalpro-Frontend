@@ -4,6 +4,7 @@ import Admin from "./pages/Admin";
 import ResultsPage from "./pages/ResultsPage";
 import ReviewPage from "./pages/ReviewPage";
 import CallPopup from "./components/CallPopup";
+import HelpAssistant from "./components/HelpAssistant";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
@@ -13,6 +14,7 @@ function App() {
   return (
     <Router>
       <CallPopup />
+      <HelpAssistant />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/results" element={<ResultsPage />} />
