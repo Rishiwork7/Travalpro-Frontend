@@ -6,17 +6,20 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
         <div>
           <h2 className="text-2xl font-bold">
-            Traval<span className="text-[#FFCC00]">Pro</span>
+            Traval<span className="text-[#FFDD00]">Pro</span>
           </h2>
           <p className="text-white/70 mt-3 text-sm">
             Enterprise-grade travel booking for flights, hotels, and premium packages.
+          </p>
+          <p className="text-[#FFDD00] mt-4 font-bold text-lg">
+            📞 (800) 518-0250
           </p>
         </div>
 
         <div>
           <h3 className="font-semibold mb-3">Support</h3>
           <ul className="space-y-2 text-sm text-white/80">
-            <li className="hover:text-[#FFCC00] transition">
+            <li className="hover:text-[#FFDD00] transition">
               <Link to="/contact">Contact Us</Link>
             </li>
             <li className="hover:text-[#FFCC00] transition">
