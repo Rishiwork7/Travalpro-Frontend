@@ -234,7 +234,7 @@ export default function LeadChatbot({ onClose }) {
             <input
               autoFocus
               type={step === STEPS.ASK_DOB ? "date" : "text"}
-              className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2"
+              className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 px-2"
               placeholder={
                 step === STEPS.ASK_NAME ? "Enter your name..." :
                 step === STEPS.ASK_DOB ? "Select your Date of Birth..." :
