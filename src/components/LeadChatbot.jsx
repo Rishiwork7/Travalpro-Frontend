@@ -32,7 +32,7 @@ export default function LeadChatbot({ onClose }) {
     service: "",
     contact: "",
   });
-  
+
   const scrollRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -74,7 +74,7 @@ export default function LeadChatbot({ onClose }) {
       await botReply(`Nice to meet you, ${userText}! 😊`);
       await botReply("What is your Date of Birth?");
       setStep(STEPS.ASK_DOB);
-    } 
+    }
     else if (step === STEPS.ASK_DOB) {
       setFormData((prev) => ({ ...prev, dob: userText }));
       await botReply("Which service can I help you with today?", { showServices: true });
@@ -98,17 +98,17 @@ export default function LeadChatbot({ onClose }) {
   const saveLead = async () => {
     setStep(STEPS.SAVING);
     setIsTyping(true);
-    
+
     try {
       let email = undefined;
       let phone = undefined;
       const contactVal = formData.contact.trim();
       if (contactVal.includes('@')) {
-          email = contactVal.split(' ').find(part => part.includes('@')) || contactVal;
-          const phoneMatch = contactVal.replace(email, '').match(/\d{7,}/);
-          if (phoneMatch) phone = phoneMatch[0];
+        email = contactVal.split(' ').find(part => part.includes('@')) || contactVal;
+        const phoneMatch = contactVal.replace(email, '').match(/\d{7,}/);
+        if (phoneMatch) phone = phoneMatch[0];
       } else {
-          phone = contactVal;
+        phone = contactVal;
       }
 
       const res = await fetch(`${API_BASE}/api/leads`, {
@@ -152,7 +152,7 @@ export default function LeadChatbot({ onClose }) {
           </div>
           <div>
             <h3 className="font-bold text-base flex items-center gap-1.5">
-              Travel Pro Assistant <Sparkles size={14} className="text-[#FFCC00]" />
+              Traval Pro Assistant <Sparkles size={14} className="text-[#FFCC00]" />
             </h3>
             <p className="text-[10px] text-white/60 font-medium uppercase tracking-wider">Expert Support • 24/7</p>
           </div>
@@ -166,13 +166,12 @@ export default function LeadChatbot({ onClose }) {
       <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-gray-50/50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2`}>
-            <div className={`max-w-[85%] rounded-2xl p-4 shadow-sm ${
-              msg.role === "user" 
-                ? "bg-[#0f294d] text-white rounded-tr-none" 
+            <div className={`max-w-[85%] rounded-2xl p-4 shadow-sm ${msg.role === "user"
+                ? "bg-[#0f294d] text-white rounded-tr-none"
                 : "bg-white text-[#0f294d] border border-gray-100 rounded-tl-none"
-            }`}>
+              }`}>
               <p className="text-sm leading-relaxed">{msg.text}</p>
-              
+
               {/* Service Buttons */}
               {msg.showServices && (
                 <div className="grid grid-cols-2 gap-2 mt-4">
@@ -237,9 +236,9 @@ export default function LeadChatbot({ onClose }) {
               className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 px-2"
               placeholder={
                 step === STEPS.ASK_NAME ? "Enter your name..." :
-                step === STEPS.ASK_DOB ? "Select your Date of Birth..." :
-                step === STEPS.ASK_CONTACT ? "Enter mobile or email..." :
-                "Type your message..."
+                  step === STEPS.ASK_DOB ? "Select your Date of Birth..." :
+                    step === STEPS.ASK_CONTACT ? "Enter mobile or email..." :
+                      "Type your message..."
               }
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
