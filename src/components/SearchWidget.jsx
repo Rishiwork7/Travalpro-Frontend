@@ -127,7 +127,29 @@ export default function SearchWidget({
   const handleSearchClick = () => {
     console.log("[SearchWidget] Search clicked. Service:", activeService, "Data:", formData);
     // --- VALIDATION START ---
+    if (activeService === "flights" || activeService === "trains") {
+      const isValidFrom = formData.from && AIRPORTS.some(a => `${a.code} - ${a.city || a.name}` === formData.from);
+      const isValidTo = formData.to && AIRPORTS.some(a => `${a.code} - ${a.city || a.name}` === formData.to);
+
+      if (!isValidFrom) {
+        alert("Please select a valid 'From' city/airport from the autocomplete dropdown.");
+        return;
+      }
+      if (!isValidTo) {
+        alert("Please select a valid 'To' city/airport from the autocomplete dropdown.");
+        return;
+      }
+      if (formData.from === formData.to) {
+        alert("Source and Destination cannot be the same.");
+        return;
+      }
+    }
+
     if (activeService === "hotels") {
+      if (!formData.city || formData.city.trim() === "") {
+        alert("Please select a valid City for your hotel search.");
+        return;
+      }
       if (!formData.checkIn || !formData.checkOut) {
         alert("Please select both Check-in and Check-out dates.");
         return;
