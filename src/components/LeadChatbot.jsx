@@ -72,7 +72,7 @@ export default function LeadChatbot({ onClose }) {
     if (step === STEPS.ASK_NAME) {
       setFormData((prev) => ({ ...prev, name: userText }));
       await botReply(`Nice to meet you, ${userText}! 😊`);
-      await botReply("What is your Date of Birth? (e.g., DD/MM/YYYY)");
+      await botReply("What is your Date of Birth?");
       setStep(STEPS.ASK_DOB);
     } 
     else if (step === STEPS.ASK_DOB) {
@@ -233,8 +233,14 @@ export default function LeadChatbot({ onClose }) {
           <div className="flex items-center gap-2 bg-gray-50 rounded-2xl px-4 py-2 border border-gray-100 focus-within:ring-2 focus-within:ring-[#0f294d]/10 transition-all">
             <input
               autoFocus
+              type={step === STEPS.ASK_DOB ? "date" : "text"}
               className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2"
-              placeholder="Type your message..."
+              placeholder={
+                step === STEPS.ASK_NAME ? "Enter your name..." :
+                step === STEPS.ASK_DOB ? "Select your Date of Birth..." :
+                step === STEPS.ASK_CONTACT ? "Enter mobile or email..." :
+                "Type your message..."
+              }
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
