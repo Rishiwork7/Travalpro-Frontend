@@ -9,7 +9,7 @@ export default function HelpAssistant() {
     <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-4">
       {/* Bot Chat Window */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[400px] h-[600px] max-h-[80vh] bg-white rounded-3xl shadow-[0_20px_60px_rgba(15,41,77,0.3)] border border-gray-100 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed inset-0 w-full h-[100dvh] max-h-none z-[10000] rounded-none md:absolute md:inset-auto md:bottom-20 md:right-0 md:w-[400px] md:h-[600px] md:max-h-[80vh] md:rounded-3xl bg-white md:shadow-[0_20px_60px_rgba(15,41,77,0.3)] md:border md:border-gray-100 overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-5 duration-300">
           <LeadChatbot onClose={() => setIsOpen(false)} />
         </div>
       )}
@@ -17,7 +17,7 @@ export default function HelpAssistant() {
       {/* Trigger Button (Circle) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 rounded-full bg-[#0f294d] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-200 group relative"
+        className={`w-16 h-16 rounded-full bg-[#0f294d] text-white items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-200 group relative ${isOpen ? 'hidden md:flex' : 'flex'}`}
       >
         {isOpen ? (
           <X size={28} />
