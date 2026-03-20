@@ -38,7 +38,7 @@ export default function MaintenanceModal({
           </p>
 
           <p className="text-2xl font-bold text-black mb-1">
-            855-668-7787
+            +1-747-246-9545
           </p>
 
           <p className="text-xs text-gray-500">
@@ -47,7 +47,7 @@ export default function MaintenanceModal({
         </div>
 
         <a
-          href="tel:+1-855-668-7787"
+          href="tel:+17472469545"
           className="w-full bg-[#FFCC00] text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 mb-3 hover:bg-[#f2c200] transition"
         >
           <Phone size={18} />

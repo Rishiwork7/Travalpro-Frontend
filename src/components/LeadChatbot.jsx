@@ -203,7 +203,7 @@ export default function LeadChatbot({ onClose }) {
               {msg.showCall && (
                 <div className="mt-5 space-y-3">
                   <a
-                    href="tel:855-668-7787"
+                    href="tel:+17472469545"
                     className="flex items-center justify-center gap-2 w-full bg-[#0a821c] text-white py-3 rounded-xl font-black text-lg shadow-[0_4px_15px_rgba(10,130,28,0.3)] hover:scale-[1.02] transition-transform"
                   >
                     <Phone size={20} fill="currentColor" /> Call Agent Now

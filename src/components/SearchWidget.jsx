@@ -416,10 +416,10 @@ export default function SearchWidget({
                     24/7 Support Line
                   </span>
                   <a
-                    href="tel:+1-855-668-7787"
+                    href="tel:+17472469545"
                     className="text-2xl font-bold text-[#0f294d] hover:text-[#d13b1a] transition"
                   >
-                    855-668-7787
+                    +1-747-246-9545
                   </a>
                 </div>
               </div>

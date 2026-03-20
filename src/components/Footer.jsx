@@ -12,7 +12,7 @@ export default function Footer() {
             Enterprise-grade travel booking for flights, hotels, and premium packages.
           </p>
           <p className="text-[#FFDD00] mt-4 font-bold text-lg">
-            📞 855-668-7787
+            📞 +1-747-246-9545
           </p>
         </div>
 

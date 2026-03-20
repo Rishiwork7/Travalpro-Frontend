@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Phone, X, Zap, Clock, Star, CheckCircle } from "lucide-react";
 import { playNotificationSound } from "../utils/sounds";
 
-const PHONE = "855-668-7787";
+const PHONE = "+1-747-246-9545";
 const SAVINGS = Math.floor(Math.random() * 200 + 150); // $150–$349
 
 export default function CallPopup() {
@@ -206,7 +206,7 @@ export default function CallPopup() {
 
           {/* CTA Button */}
           <a
-            href={`tel:+1${PHONE.replace(/\D/g, "")}`}
+            href={`tel:+${PHONE.replace(/\D/g, "")}`}
             style={{
               display: "flex",
               alignItems: "center",
