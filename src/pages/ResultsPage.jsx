@@ -45,16 +45,73 @@ const generateFrontendMock = (type, from, to) => {
     }));
   }
 
-  // Generic fallback for other services
-  const brands = { hotels: ["Grand Hyatt", "Marriott", "Radisson Blu", "Taj Palace", "The Oberoi", "Ibis"],
-    car_rental: ["Swift Dzire", "Honda City", "Toyota Innova", "Hyundai Creta", "BMW 3 Series", "Tesla Model 3"],
-    bus: ["ZingBus AC Sleeper", "IntrCity SmartBus", "Raj Travels", "SRS Travels", "Orange Travels", "Parveen Travels"],
-    train: ["Shatabdi Express", "Rajdhani Express", "Vande Bharat", "Duronto Express", "Jan Shatabdi", "Humsafar Express"],
-    cruises: ["Royal Caribbean", "Costa Cruises", "Norwegian Cruise", "MSC Cruises", "Celebrity Cruises", "Carnival"],
-    insurance: ["Acko Travel Shield", "Tata AIG Globe", "HDFC Ergo", "ICICI Lombard", "Bajaj Allianz", "Star Health"],
-    packages: [`Best of ${t} - 3D/2N`, `${t} Explorer - 5D/4N`, `${t} Luxury - 7D/6N`, `Budget ${t} - 4D/3N`, `${t} Family Pkg`, `Honeymoon ${t}`],
+  const brands = {
+    hotels: [
+      "Grand Hyatt",
+      "Marriott",
+      "Radisson Blu",
+      "Taj Palace",
+      "The Oberoi",
+      "Ibis",
+    ],
+    car_rental: [
+      "Swift Dzire",
+      "Honda City",
+      "Toyota Innova",
+      "Hyundai Creta",
+      "BMW 3 Series",
+      "Tesla Model 3",
+    ],
+    bus: [
+      "ZingBus AC Sleeper",
+      "IntrCity SmartBus",
+      "Raj Travels",
+      "SRS Travels",
+      "Orange Travels",
+      "Parveen Travels",
+    ],
+    train: [
+      "Shatabdi Express",
+      "Rajdhani Express",
+      "Vande Bharat",
+      "Duronto Express",
+      "Jan Shatabdi",
+      "Humsafar Express",
+    ],
+    cruises: [
+      "Royal Caribbean",
+      "Costa Cruises",
+      "Norwegian Cruise",
+      "MSC Cruises",
+      "Celebrity Cruises",
+      "Carnival",
+    ],
+    insurance: [
+      "Acko Travel Shield",
+      "Tata AIG Globe",
+      "HDFC Ergo",
+      "ICICI Lombard",
+      "Bajaj Allianz",
+      "Star Health",
+    ],
+    packages: [
+      `Best of ${t} - 3D/2N`,
+      `${t} Explorer - 5D/4N`,
+      `${t} Luxury - 7D/6N`,
+      `Budget ${t} - 4D/3N`,
+      `${t} Family Pkg`,
+      `Honeymoon ${t}`,
+    ],
   };
-  const prices = { hotels: 4500, car_rental: 2000, bus: 900, train: 1200, cruises: 35000, insurance: 600, packages: 22000 };
+  const prices = {
+    hotels: 4500,
+    car_rental: 2000,
+    bus: 900,
+    train: 1200,
+    cruises: 35000,
+    insurance: 600,
+    packages: 22000,
+  };
 
   return Array.from({ length: 6 }, (_, i) => ({
     id: `mock_${type}_${i + 1}`,
@@ -66,7 +123,6 @@ const generateFrontendMock = (type, from, to) => {
   }));
 };
 // ──────────────────────────────────────────────────────────────────────────
-
 
 export default function ResultsPage() {
   const location = useLocation();
@@ -81,21 +137,14 @@ export default function ResultsPage() {
     () => () => {
       const base = {
         from:
-          searchParams.get("from") ||
-          location.state?.searchData?.from ||
-          "",
-        to:
-          searchParams.get("to") ||
-          location.state?.searchData?.to ||
-          "",
+          searchParams.get("from") || location.state?.searchData?.from || "",
+        to: searchParams.get("to") || location.state?.searchData?.to || "",
         date:
-          searchParams.get("date") ||
-          location.state?.searchData?.date ||
-          "",
+          searchParams.get("date") || location.state?.searchData?.date || "",
         passengers: Number(
           searchParams.get("passengers") ||
-          location.state?.searchData?.passengers ||
-          1
+            location.state?.searchData?.passengers ||
+            1,
         ),
       };
 
@@ -117,9 +166,7 @@ export default function ResultsPage() {
             location.state?.searchData?.checkOut ||
             "",
           rooms: Number(
-            searchParams.get("rooms") ||
-            location.state?.searchData?.rooms ||
-            1
+            searchParams.get("rooms") || location.state?.searchData?.rooms || 1,
           ),
         };
       }
@@ -198,25 +245,21 @@ export default function ResultsPage() {
 
       return base;
     },
-    [location.state, searchParams, activeService]
+    [location.state, searchParams, activeService],
   );
 
   const [searchForm, setSearchForm] = useState(buildSearchFromParams);
   const [draftForm, setDraftForm] = useState(buildSearchFromParams);
 
-  // Initialize loading to true if we have a valid search to perform
   const [loading, setLoading] = useState(() => {
     const params = buildSearchFromParams();
-    if (activeService === "flights") {
+    if (activeService === "flights")
       return !!(params.from && params.to && params.date);
-    }
-    // For other services, we might need stricter checks, but generally if we have params we are loading
     return !!(params.to || params.city || params.pickup);
   });
 
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
-
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [leadOpen, setLeadOpen] = useState(false);
   const { formatPrice } = useSettings();
@@ -228,9 +271,9 @@ export default function ResultsPage() {
   const [selectedAirlines, setSelectedAirlines] = useState({});
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [sortType, setSortType] = useState("relevant");
+  // ── NEW: active filter chip ──────────────────────────────────────────────
+  const [activeChip, setActiveChip] = useState(null);
 
-  // --- FETCH LOGIC (Moved INSIDE useEffect to fix errors) ---
-  // Sync state when URL params change
   useEffect(() => {
     const next = buildSearchFromParams();
     setSearchForm((prev) => {
@@ -286,25 +329,6 @@ export default function ResultsPage() {
     return { from, to, date };
   };
 
-  const parseTimes = (subtitle) => {
-    if (!subtitle) return {};
-    const match = subtitle.match(
-      /Departs\s+(\d{1,2}):(\d{2})\s*(AM|PM).*Arrives\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i
-    );
-    if (!match) return {};
-    const to24 = (h, m, mer) => {
-      let hour = Number(h);
-      if (mer.toUpperCase() === "PM" && hour < 12) hour += 12;
-      if (mer.toUpperCase() === "AM" && hour === 12) hour = 0;
-      return `${String(hour).padStart(2, "0")}:${m}`;
-    };
-    return {
-      departureTime: to24(match[1], match[2], match[3]),
-      arrivalTime: to24(match[4], match[5], match[6]),
-    };
-  };
-
-  // Fetch when search form changes
   useEffect(() => {
     if (activeService === "flights") {
       if (!searchForm?.from || !searchForm?.to || !searchForm?.date) {
@@ -326,12 +350,9 @@ export default function ResultsPage() {
           : "";
 
         if (activeService === "flights") {
-          console.time("Frontend Fetch Flights");
           const res = await fetch(`${API_BASE}/api/flights/search`, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               from: cleanFrom,
               to: cleanTo,
@@ -339,19 +360,14 @@ export default function ResultsPage() {
             }),
           });
           const data = await res.json();
-          console.timeEnd("Frontend Fetch Flights");
-
           if (res.ok) {
-            if (Array.isArray(data) && data.length > 0) {
-              setResults(data);
-            } else {
-              const mock = generateFrontendMock("flights", cleanFrom, cleanTo);
-              setResults(mock);
-            }
+            setResults(
+              Array.isArray(data) && data.length > 0
+                ? data
+                : generateFrontendMock("flights", cleanFrom, cleanTo),
+            );
           } else {
-            console.error("API Error:", data);
-            const mock = generateFrontendMock("flights", cleanFrom, cleanTo);
-            setResults(mock);
+            setResults(generateFrontendMock("flights", cleanFrom, cleanTo));
           }
           return;
         }
@@ -362,26 +378,15 @@ export default function ResultsPage() {
             checkIn: searchForm.checkIn || searchForm.date,
             checkOut: searchForm.checkOut || "",
             rooms: searchForm.rooms || 1,
-            guests: searchForm.passengers || 1, // sending guests too just in case
+            guests: searchForm.passengers || 1,
           }).toString();
-
-          console.time("Frontend Fetch Hotels");
           const res = await fetch(`${API_BASE}/api/hotels/search?${params}`);
           const data = await res.json();
-          console.timeEnd("Frontend Fetch Hotels");
-
-          if (res.ok) {
-            if (Array.isArray(data) && data.length > 0) {
-              setResults(data);
-            } else {
-              const mock = generateFrontendMock("hotels", cleanFrom, cleanTo);
-              setResults(mock);
-            }
-          } else {
-            console.error("API Error:", data);
-            const mock = generateFrontendMock("hotels", cleanFrom, cleanTo);
-            setResults(mock);
-          }
+          setResults(
+            res.ok && Array.isArray(data) && data.length > 0
+              ? data
+              : generateFrontendMock("hotels", cleanFrom, cleanTo),
+          );
           setLoading(false);
           return;
         }
@@ -393,33 +398,23 @@ export default function ResultsPage() {
           date: searchForm.date || "",
           type: serviceType,
         }).toString();
-
-        console.time("Frontend Fetch");
-        const res = await fetch(
-          `${API_BASE}/api/transport/search?${params}`
-        );
+        const res = await fetch(`${API_BASE}/api/transport/search?${params}`);
         const data = await res.json();
-        console.timeEnd("Frontend Fetch");
-
         if (res.ok) {
           const payload = data?.data || [];
-          if (Array.isArray(payload) && payload.length > 0) {
-            setResults(payload);
-          } else {
-            const mock = generateFrontendMock(serviceType, cleanFrom, cleanTo);
-            setResults(mock);
-          }
+          setResults(
+            Array.isArray(payload) && payload.length > 0
+              ? payload
+              : generateFrontendMock(serviceType, cleanFrom, cleanTo),
+          );
         } else {
-          console.error("API Error:", data);
-          const mock = generateFrontendMock(serviceType, cleanFrom, cleanTo);
-          setResults(mock);
+          setResults(generateFrontendMock(serviceType, cleanFrom, cleanTo));
         }
       } catch (err) {
-        console.error("Fetch error:", err);
-        // API is down — show mock data so user still sees results
         const svcType = activeService === "flights" ? "flights" : activeService;
-        const mock = generateFrontendMock(svcType, searchForm.from, searchForm.to);
-        setResults(mock);
+        setResults(
+          generateFrontendMock(svcType, searchForm.from, searchForm.to),
+        );
       } finally {
         setLoading(false);
       }
@@ -430,9 +425,6 @@ export default function ResultsPage() {
 
   const handleSearchSubmit = (data) => {
     const mapped = mapSearchFields(data);
-    if (!mapped.from && activeService !== "hotels" && activeService !== "insurance") {
-      // For non-flight services, allow empty origin if not applicable
-    }
     if (!mapped.to || !mapped.date) {
       alert("Fill all fields");
       return;
@@ -446,15 +438,11 @@ export default function ResultsPage() {
       passengers,
       service: activeService,
     };
-
-    // Force update local state so useEffect sees the change immediately if params are same but user wants refresh
     setSearchForm(next);
     setDraftForm(next);
     setSearchParams(next);
   };
 
-
-  // --- LEAD HANDLING ---
   const handleLeadContinue = (data) => {
     setLeadOpen(false);
     navigate("/review", {
@@ -475,10 +463,7 @@ export default function ResultsPage() {
   const priceStats = useMemo(() => {
     if (!results.length) return { min: 0, max: 0 };
     const prices = results.map((r) => Number(r.price || 0));
-    return {
-      min: Math.min(...prices),
-      max: Math.max(...prices),
-    };
+    return { min: Math.min(...prices), max: Math.max(...prices) };
   }, [results]);
 
   const pricePlaceholders = useMemo(
@@ -486,13 +471,13 @@ export default function ResultsPage() {
       min: formatPrice(priceStats.min),
       max: formatPrice(priceStats.max),
     }),
-    [formatPrice, priceStats]
+    [formatPrice, priceStats],
   );
 
+  // ── Apply filter chip to results ─────────────────────────────────────────
   const filteredResults = useMemo(() => {
-    if (activeService !== "flights") {
-      return results;
-    }
+    if (activeService !== "flights") return results;
+
     const selectedStops = Object.entries(stopsFilter)
       .filter(([, v]) => v)
       .map(([k]) => k);
@@ -500,8 +485,7 @@ export default function ResultsPage() {
       .filter(([, v]) => v)
       .map(([k]) => k);
 
-    // First filter the results
-    const filtered = results.filter((item) => {
+    let filtered = results.filter((item) => {
       const stopsMatch =
         selectedStops.length === 0 ||
         selectedStops.some((key) => {
@@ -509,60 +493,66 @@ export default function ResultsPage() {
           if (key === "oneStop") return item.stops === 1;
           return item.stops >= 2;
         });
-
       const airlineMatch =
-        activeAirlines.length === 0 || activeAirlines.includes(item.airlineName);
-
+        activeAirlines.length === 0 ||
+        activeAirlines.includes(item.airlineName);
       const min = priceRange.min !== "" ? Number(priceRange.min) : null;
       const max = priceRange.max !== "" ? Number(priceRange.max) : null;
       const price = Number(item.price || 0);
-      const minOk = min === null || price >= min;
-      const maxOk = max === null || price <= max;
-
-      return stopsMatch && airlineMatch && minOk && maxOk;
+      return (
+        stopsMatch &&
+        airlineMatch &&
+        (min === null || price >= min) &&
+        (max === null || price <= max)
+      );
     });
 
-    // Then apply sorting
+    // Apply quick filter chips
+    if (activeChip === "nonstop")
+      filtered = filtered.filter((r) => r.stops === 0);
+    else if (activeChip === "morning")
+      filtered = filtered.filter((r) => {
+        const h = parseInt(r.departure?.split(":")[0] || "0");
+        return h >= 6 && h < 12;
+      });
+    else if (activeChip === "cheapest")
+      filtered = [...filtered].sort((a, b) => a.price - b.price);
+
     return sortFlights(filtered, sortType);
-  }, [results, stopsFilter, selectedAirlines, priceRange, sortType, activeService]);
+  }, [
+    results,
+    stopsFilter,
+    selectedAirlines,
+    priceRange,
+    sortType,
+    activeService,
+    activeChip,
+  ]);
 
   return (
     <div className="min-h-screen bg-white text-[#1e293b] font-sans">
       <Navbar />
 
       <div className="w-full px-4 md:px-8 py-8 flex gap-8">
-
-        {/* Sidebar Filters - Hidden for this focused dashboard flow */}
-        {activeService === "flights" && false && (
-          <div className="hidden lg:block w-1/4 h-fit sticky top-32 space-y-4">
-            {/* ... */}
-          </div>
-        )}
-
-        {/* Results Area */}
         <div className="flex-1">
-
           {/* Header */}
-          <div className="mb-6">
+          <div className="mb-4">
             <h2 className="text-2xl font-bold text-[#0f294d]">
               {activeService === "hotels" ? (
                 <>
-                  Hotels in <span className="text-[#0f294d]">{searchForm?.to || searchForm?.city}</span>
+                  Hotels in <span>{searchForm?.to || searchForm?.city}</span>
                 </>
               ) : (
                 <>
                   {serviceLabels[activeService] || "Results"} from{" "}
-                  <span className="text-[#0f294d]">{searchForm?.from}</span> to{" "}
-                  <span className="text-[#0f294d]">{searchForm?.to}</span>
+                  <span>{searchForm?.from}</span> to{" "}
+                  <span>{searchForm?.to}</span>
                 </>
               )}
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              {loading ? "Searching..." : `${filteredResults.length} results found`}
-            </p>
           </div>
 
-          {/* 1. LOADING STATE - Fixed centered overlay */}
+          {/* Loading */}
           {loading && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm">
               <FetchingLoader
@@ -572,149 +562,227 @@ export default function ResultsPage() {
             </div>
           )}
 
-          {/* 2. ERROR / EMPTY STATE (Ye pehle missing tha) */}
+          {/* Error / Empty */}
           {!loading && (error || results.length === 0) && (
             <div className="glass-card rounded-xl p-10 text-center">
               <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <h3 className="text-xl font-bold text-[#0f294d] mb-2">
                 No {serviceLabels[activeService] || "Results"} Found
               </h3>
-              <p className="text-gray-600">{error || "Try changing your date or route."}</p>
+              <p className="text-gray-600">
+                {error || "Try changing your date or route."}
+              </p>
             </div>
           )}
 
-          {!loading && results.length > 0 && filteredResults.length === 0 && !error && (
-            <div className="glass-card rounded-xl p-10 text-center">
-              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <h3 className="text-xl font-bold text-[#0f294d] mb-2">No Matches</h3>
-              <p className="text-gray-600">Try adjusting filters to see more options.</p>
-            </div>
-          )}
+          {!loading &&
+            results.length > 0 &&
+            filteredResults.length === 0 &&
+            !error && (
+              <div className="glass-card rounded-xl p-10 text-center">
+                <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                <h3 className="text-xl font-bold text-[#0f294d] mb-2">
+                  No Matches
+                </h3>
+                <p className="text-gray-600">
+                  Try adjusting filters to see more options.
+                </p>
+              </div>
+            )}
 
-          {/* 3. SUCCESS DASHBOARD (Found X Flights) */}
+          {/* Results */}
           {!loading && filteredResults.length > 0 && (
             <div className="w-full">
-              {/* Success Banner */}
-              <div 
-                className="rounded-3xl p-8 md:p-12 mb-8 text-center"
+              {/* ── SLIM NOTIFICATION BAR (replaces big banner) ── */}
+              <div
+                className="rounded-xl px-5 py-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
                 style={{
-                  background: activeService === "hotels" 
-                    ? "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200') center/cover"
-                    : "linear-gradient(rgba(15,41,77,0.85), rgba(15,41,77,0.7)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200') center/cover",
-                  boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
+                  background: "linear-gradient(90deg, #0f294d, #1a3b66)",
                 }}
               >
-                <div className="inline-flex items-center gap-2 bg-[#FFCC00]/20 border border-[#FFCC00]/40 text-[#FFCC00] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
-                  <TrendingUp size={14} /> Great news! We found unpublished rates.
+                <div className="flex items-center gap-3">
+                  <TrendingUp
+                    size={18}
+                    className="text-[#FFCC00] flex-shrink-0"
+                  />
+                  <p className="text-white text-sm font-semibold">
+                    We found{" "}
+                    <span className="text-[#FFCC00] font-black">
+                      {results.length} unpublished rates
+                    </span>{" "}
+                    for this route — not available on public booking sites.
+                  </p>
                 </div>
-                <h3 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
-                  Found {results.length} Exclusive Deals for {searchForm?.to || searchForm?.city || "your trip"}!
-                </h3>
-                <p className="text-white/80 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-8">
-                  We have identified {Math.min(3, results.length)} unsold {activeService === 'hotels' ? 'hotel rooms' : (serviceLabels[activeService]?.toLowerCase() || "deals")} specifically for your dates.
-                </p>
-                
-                {/* Primary Button */}
                 <button
                   onClick={() => {
                     setSelectedBooking(filteredResults[0]);
                     setLeadOpen(true);
                   }}
-                  className="bg-[#FFCC00] hover:bg-[#ffd633] text-[#0f294d] text-xl font-black py-5 px-12 rounded-2xl shadow-[0_12px_40px_rgba(255,204,0,0.4)] transition-all hover:-translate-y-1 flex items-center justify-center gap-3 mx-auto"
+                  className="flex-shrink-0 bg-[#FFCC00] text-[#0f294d] text-sm font-black px-5 py-2 rounded-lg hover:bg-[#ffd633] transition whitespace-nowrap"
                 >
-                  Reveal Secret Discounted Price <ArrowRight size={24} />
+                  Reveal Rates →
                 </button>
               </div>
 
-              {/* Best Value Card Highlight */}
+              {/* ── FILTER CHIPS (flights only) ── */}
+              {activeService === "flights" && (
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  {[
+                    { id: "nonstop", label: "Non-stop" },
+                    { id: "morning", label: "Morning departure" },
+                    { id: "cheapest", label: "Best value" },
+                  ].map((chip) => (
+                    <button
+                      key={chip.id}
+                      onClick={() =>
+                        setActiveChip(activeChip === chip.id ? null : chip.id)
+                      }
+                      className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
+                        activeChip === chip.id
+                          ? "bg-[#0f294d] text-white border-[#0f294d]"
+                          : "bg-white text-[#0f294d] border-gray-200 hover:border-[#0f294d]"
+                      }`}
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                  <span className="ml-auto text-xs text-gray-400 self-center">
+                    More options available by phone — call our team
+                  </span>
+                </div>
+              )}
+
+              {/* ── TOP RESULT CARD ── */}
               <div className="glass-card rounded-2xl overflow-hidden border-[#FFCC00]/30 border-2">
                 <div className="bg-[#FFCC00]/10 px-6 py-3 border-b border-[#FFCC00]/20 flex items-center justify-between">
-                  <span className="text-[#0f294d] font-bold text-sm uppercase tracking-wider">Top Recommended {serviceLabels[activeService] || "Deal"}</span>
-                  <span className="bg-green-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter italic">Cheapest</span>
+                  <span className="text-[#0f294d] font-bold text-sm uppercase tracking-wider">
+                    Top Recommended {serviceLabels[activeService] || "Deal"}
+                  </span>
+                  <span className="bg-green-600 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter italic">
+                    Cheapest
+                  </span>
                 </div>
                 <div className="p-6">
-                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                      <div className="flex flex-col md:flex-row items-center gap-6 flex-1">
-                        <div className="w-full md:w-48 h-32 relative rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
-                          <img
-                            src={activeService === "flights" 
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="flex flex-col md:flex-row items-center gap-6 flex-1">
+                      <div className="w-full md:w-48 h-32 relative rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
+                        <img
+                          src={
+                            activeService === "flights"
                               ? `https://images.kiwi.com/airlines/64/${filteredResults[0].airlineCode}.png`
-                              : (filteredResults[0].image || "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600")}
-                            alt={filteredResults[0].airlineName || filteredResults[0].title}
-                            className={`w-full h-full ${activeService === 'flights' ? 'object-contain p-4' : 'object-cover'}`}
-                          />
-                        </div>
+                              : filteredResults[0].image ||
+                                "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600"
+                          }
+                          alt={
+                            filteredResults[0].airlineName ||
+                            filteredResults[0].title
+                          }
+                          className={`w-full h-full ${activeService === "flights" ? "object-contain p-4" : "object-cover"}`}
+                        />
+                      </div>
 
-                        {activeService === "flights" ? (
-                          <div className="flex-1 grid grid-cols-3 gap-6 text-center w-full">
+                      {activeService === "flights" ? (
+                        <div className="flex-1 w-full">
+                          {/* ── Airline name prominently shown ── */}
+                          <p className="text-[#0f294d] font-bold text-base mb-3">
+                            {filteredResults[0].airlineName} &nbsp;·&nbsp;
+                            <span className="text-gray-500 font-normal text-sm">
+                              {filteredResults[0].flightNumber}
+                            </span>
+                          </p>
+                          <div className="grid grid-cols-3 gap-6 text-center">
                             <div>
-                              <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].departure}</p>
-                              <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].from}</p>
+                              <p className="font-black text-2xl text-[#0f294d]">
+                                {filteredResults[0].departure}
+                              </p>
+                              <p className="text-xs text-gray-500 font-bold uppercase">
+                                {filteredResults[0].from}
+                              </p>
                             </div>
                             <div className="flex flex-col items-center justify-center py-2">
-                              <p className="text-[10px] text-gray-400 font-bold mb-1">{filteredResults[0].duration}</p>
+                              <p className="text-[10px] text-gray-400 font-bold mb-1">
+                                {filteredResults[0].duration}
+                              </p>
                               <div className="w-full h-[2px] bg-gray-200 relative flex items-center justify-center">
                                 <div className="w-2.5 h-2.5 bg-gray-300 rounded-full border-2 border-white"></div>
                               </div>
                               <p className="text-[10px] text-green-600 mt-1 font-black uppercase tracking-tighter">
-                                {filteredResults[0].stops === 0 ? "Non-stop" : `${filteredResults[0].stops} Stop`}
+                                {filteredResults[0].stops === 0
+                                  ? "Non-stop"
+                                  : `${filteredResults[0].stops} Stop`}
                               </p>
                             </div>
                             <div>
-                              <p className="font-black text-2xl text-[#0f294d]">{filteredResults[0].arrival}</p>
-                              <p className="text-xs text-gray-500 font-bold uppercase">{filteredResults[0].to}</p>
+                              <p className="font-black text-2xl text-[#0f294d]">
+                                {filteredResults[0].arrival}
+                              </p>
+                              <p className="text-xs text-gray-500 font-bold uppercase">
+                                {filteredResults[0].to}
+                              </p>
                             </div>
                           </div>
-                        ) : (
-                          <div className="flex-1 text-center md:text-left">
-                            <h4 className="text-2xl font-black text-[#0f294d] mb-1">
-                              {filteredResults[0].title || filteredResults[0].operatorName}
-                            </h4>
-                            <p className="text-sm text-gray-500 font-bold flex items-center justify-center md:justify-start gap-1">
-                              <MapPin size={14} /> {filteredResults[0].subtitle || filteredResults[0].address || "City Center Location"}
-                            </p>
-                            <div className="mt-3 flex items-center justify-center md:justify-start gap-4">
-                              {filteredResults[0].rating && (
-                                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
-                                  <Star size={12} fill="currentColor" /> {filteredResults[0].rating}
-                                </div>
-                              )}
-                              <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
-                                <CheckCircle size={12} /> Instant Confirmation
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-center md:text-right md:pl-8 md:border-l md:border-gray-100 min-w-[200px]">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">
-                          {activeService === "flights" ? filteredResults[0].airlineName : "Exclusive Rate"}
-                        </p>
-                        <div className="mb-4">
-                          <p className="text-4xl font-black text-[#0a821c]">
-                            {formatPrice(filteredResults[0].price)}
-                          </p>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase">
-                            {activeService === "hotels" ? "Per Night" : "Total for All Travelers"}
-                          </p>
                         </div>
-                        <button
-                          onClick={() => {
-                            setSelectedBooking(filteredResults[0]);
-                            setLeadOpen(true);
-                          }}
-                          className="bg-[#0f294d] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#1a3b66] transition w-full"
-                        >
-                          Unlock My Rate
-                        </button>
+                      ) : (
+                        <div className="flex-1 text-center md:text-left">
+                          <h4 className="text-2xl font-black text-[#0f294d] mb-1">
+                            {filteredResults[0].title ||
+                              filteredResults[0].operatorName}
+                          </h4>
+                          <p className="text-sm text-gray-500 font-bold flex items-center justify-center md:justify-start gap-1">
+                            <MapPin size={14} />{" "}
+                            {filteredResults[0].subtitle ||
+                              filteredResults[0].address ||
+                              "City Center Location"}
+                          </p>
+                          <div className="mt-3 flex items-center justify-center md:justify-start gap-4">
+                            {filteredResults[0].rating && (
+                              <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
+                                <Star size={12} fill="currentColor" />{" "}
+                                {filteredResults[0].rating}
+                              </div>
+                            )}
+                            <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1">
+                              <CheckCircle size={12} /> Instant Confirmation
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── Price + CTA ── */}
+                    <div className="text-center md:text-right md:pl-8 md:border-l md:border-gray-100 min-w-[200px]">
+                      <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">
+                        Our Rate
+                      </p>
+                      <div className="mb-4">
+                        <p className="text-4xl font-black text-[#0a821c]">
+                          {formatPrice(filteredResults[0].price)}
+                        </p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase">
+                          {activeService === "hotels"
+                            ? "Per Night"
+                            : "Total for All Travelers"}
+                        </p>
                       </div>
-                   </div>
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(filteredResults[0]);
+                          setLeadOpen(true);
+                        }}
+                        className="bg-[#0f294d] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#1a3b66] transition w-full"
+                      >
+                        Book This Rate
+                      </button>
+                      <p className="text-xs text-gray-400 mt-3">
+                        Showing top result — {results.length - 1} more available
+                        via our team
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )}
-
-
         </div>
       </div>
 
