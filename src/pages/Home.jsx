@@ -235,13 +235,20 @@ export default function Home() {
       <section
         className="relative isolate bg-white"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2000&auto=format&fit=crop')",
+          backgroundImage: `url('${
+            [
+              "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=2000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2000&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1546412414-8035e1776c9a?q=80&w=2000&auto=format&fit=crop",
+            ][Math.floor(Date.now() / 8000) % 4]
+          }')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           minHeight: "calc(100vh - 80px)",
           display: "flex",
           alignItems: "center",
+          transition: "background-image 1s ease-in-out",
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f294d]/40 via-[#0f294d]/20 to-[#0f294d]/50"></div>
@@ -467,7 +474,7 @@ export default function Home() {
                 date: "Nov 2026",
                 text: "Clear pricing, no surprises. Refund policy was explained before I confirmed the booking.",
               },
-          
+
               {
                 name: "Rahul M.",
                 route: "DEL → JFK",
