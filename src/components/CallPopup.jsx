@@ -3,7 +3,7 @@ import { Phone, X, Zap, Clock, Star, CheckCircle } from "lucide-react";
 import { playNotificationSound } from "../utils/sounds";
 
 const PHONE = "+1-747-246-9545";
-const SAVINGS = Math.floor(Math.random() * 200 + 150); // $150–$349
+const SAVINGS = 350;
 
 export default function CallPopup() {
   const [isVisible, setIsVisible] = useState(false);
@@ -15,7 +15,7 @@ export default function CallPopup() {
     timerRef.current = setTimeout(() => {
       setIsVisible(true);
       playNotificationSound();
-    }, 15000);
+    }, 40000);
     return () => clearTimeout(timerRef.current);
   }, []);
 
@@ -246,7 +246,7 @@ export default function CallPopup() {
                 color: "#78350f",
               }}
             >
-              4.8 / 5 — 12,000+ Happy Travelers
+              4.7 / 5 — 12,000+ Happy Travelers
             </span>
           </div>
 
