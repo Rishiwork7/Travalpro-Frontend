@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Headset, Tag, Clock, ShieldCheck, UserCheck, Phone } from "lucide-react";
+import {
+  Headset,
+  Tag,
+  Clock,
+  ShieldCheck,
+  UserCheck,
+  Phone,
+} from "lucide-react";
 
 export default function CallDropdown() {
   const [open, setOpen] = useState(false);
@@ -47,7 +54,9 @@ export default function CallDropdown() {
           <span className="absolute inline-flex h-full w-full rounded-full bg-[#FFCC00]/30 animate-ping"></span>
         </span>
         <span className="text-left">
-          <span className="block font-semibold leading-tight">24/7 Support</span>
+          <span className="block font-semibold leading-tight">
+            24/7 Support
+          </span>
           <span className="block text-xs text-gray-500">Call & Save</span>
         </span>
       </button>
@@ -66,7 +75,9 @@ export default function CallDropdown() {
                     <Icon size={18} className={item.iconClass} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#0f294d]">{item.title}</p>
+                    <p className="text-sm font-semibold text-[#0f294d]">
+                      {item.title}
+                    </p>
                     <p className="text-xs text-gray-500">{item.desc}</p>
                   </div>
                 </div>
@@ -80,6 +91,20 @@ export default function CallDropdown() {
             >
               <Phone size={18} />
               +1-747-246-9545
+            </a>
+            <a
+              href="https://wa.me/919973607304?text=I%20found%20a%20deal%20on%20Travalpro%2C%20please%20help%20me%20book"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-2 bg-[#25D366] text-white font-bold text-center py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-[#1ebe5d] transition"
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                width="18"
+                height="18"
+                alt="WhatsApp"
+              />
+              WhatsApp Us
             </a>
             <p className="text-xs text-gray-500 text-center mt-2">
               Call now to lock these rates!
