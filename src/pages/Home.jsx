@@ -467,6 +467,25 @@ export default function Home() {
                 date: "Nov 2026",
                 text: "Clear pricing, no surprises. Refund policy was explained before I confirmed the booking.",
               },
+          
+              {
+                name: "Rahul M.",
+                route: "DEL → JFK",
+                date: "Oct 2026",
+                text: "Saved over $400 compared to what I saw on Google Flights. The agent sorted everything in one call.",
+              },
+              {
+                name: "Priya S.",
+                route: "BOM → DXB",
+                date: "Sep 2026",
+                text: "Booked for a family of four. The team handled seat preferences and meal options without me having to follow up.",
+              },
+              {
+                name: "James T.",
+                route: "MAA → LHR",
+                date: "Aug 2026",
+                text: "First time using Travalpro. Was skeptical about the savings claim — ended up paying $350 less than Expedia.",
+              },
             ].map((t) => (
               <div
                 key={t.name}
