@@ -52,7 +52,8 @@ export default function CallPopup() {
           maxWidth: "440px",
           borderRadius: "28px",
           overflow: "hidden",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)",
+          boxShadow:
+            "0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)",
           animation: "popupIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both",
           position: "relative",
         }}
@@ -69,7 +70,15 @@ export default function CallPopup() {
           }}
         >
           <Clock size={13} color="#FFDD00" strokeWidth={3} />
-          <p style={{ color: "white", fontSize: "0.76rem", fontWeight: "800", letterSpacing: "0.07em", margin: 0 }}>
+          <p
+            style={{
+              color: "white",
+              fontSize: "0.76rem",
+              fontWeight: "800",
+              letterSpacing: "0.07em",
+              margin: 0,
+            }}
+          >
             LIMITED OFFER EXPIRES IN&nbsp;
             <span
               style={{
@@ -88,7 +97,8 @@ export default function CallPopup() {
         {/* ── HEADER ── */}
         <div
           style={{
-            background: "linear-gradient(145deg, #0c1f44 0%, #1a3a6e 60%, #0f2d58 100%)",
+            background:
+              "linear-gradient(145deg, #0c1f44 0%, #1a3a6e 60%, #0f2d58 100%)",
             padding: "36px 30px 30px",
             textAlign: "center",
             position: "relative",
@@ -112,8 +122,12 @@ export default function CallPopup() {
               cursor: "pointer",
               transition: "background 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.2)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(255,255,255,0.2)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "rgba(255,255,255,0.1)")
+            }
           >
             <X size={15} color="white" />
           </button>
@@ -129,7 +143,8 @@ export default function CallPopup() {
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 18px",
-              boxShadow: "0 0 0 10px rgba(255,221,0,0.15), 0 8px 28px rgba(255,221,0,0.45)",
+              boxShadow:
+                "0 0 0 10px rgba(255,221,0,0.15), 0 8px 28px rgba(255,221,0,0.45)",
             }}
           >
             <Zap size={32} color="#0f294d" fill="#0f294d" />
@@ -157,26 +172,51 @@ export default function CallPopup() {
           >
             Save Up to&nbsp;
             <span style={{ color: "#FFDD00" }}>${SAVINGS}</span>
-            <br />on Your Flight!
+            <br />
+            on Your Flight!
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "0.92rem", margin: 0 }}>
-            Speak to a live agent and unlock exclusive wholesale fares — not available online.
+          <p
+            style={{
+              color: "rgba(255,255,255,0.65)",
+              fontSize: "0.92rem",
+              margin: 0,
+            }}
+          >
+            Speak to a live agent and unlock exclusive wholesale fares — not
+            available online.
           </p>
         </div>
 
         {/* ── BODY ── */}
         <div style={{ background: "#fff", padding: "26px 28px" }}>
-
           {/* Trust checklist */}
-          <div style={{ marginBottom: "22px", display: "flex", flexDirection: "column", gap: "9px" }}>
+          <div
+            style={{
+              marginBottom: "22px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "9px",
+            }}
+          >
             {[
               "Unpublished wholesale fares not online",
               "No booking fees — ever",
               "Price match guarantee + 24/7 support",
             ].map((item) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div
+                key={item}
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
                 <CheckCircle size={16} color="#1d4ed8" strokeWidth={2.5} />
-                <span style={{ fontSize: "0.87rem", color: "#374151", fontWeight: "600" }}>{item}</span>
+                <span
+                  style={{
+                    fontSize: "0.87rem",
+                    color: "#374151",
+                    fontWeight: "600",
+                  }}
+                >
+                  {item}
+                </span>
               </div>
             ))}
           </div>
@@ -199,7 +239,13 @@ export default function CallPopup() {
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={13} fill="#f5c400" color="#f5c400" />
             ))}
-            <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "#78350f" }}>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: "700",
+                color: "#78350f",
+              }}
+            >
               4.8 / 5 — 12,000+ Happy Travelers
             </span>
           </div>
@@ -225,11 +271,13 @@ export default function CallPopup() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 14px 36px rgba(29,78,216,0.55)";
+              e.currentTarget.style.boxShadow =
+                "0 14px 36px rgba(29,78,216,0.55)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 8px 28px rgba(29,78,216,0.4)";
+              e.currentTarget.style.boxShadow =
+                "0 8px 28px rgba(29,78,216,0.4)";
             }}
           >
             <Phone size={22} fill="white" />
@@ -237,8 +285,17 @@ export default function CallPopup() {
           </a>
 
           {/* Sub-label */}
-          <p style={{ textAlign: "center", fontSize: "0.73rem", color: "#9ca3af", marginTop: "10px", marginBottom: "2px" }}>
-            📞 Free to call &nbsp;·&nbsp; Available 24/7 &nbsp;·&nbsp; No hold music
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "0.73rem",
+              color: "#9ca3af",
+              marginTop: "10px",
+              marginBottom: "2px",
+            }}
+          >
+            📞 Free to call &nbsp;·&nbsp; Available 24/7 &nbsp;·&nbsp; No hold
+            music
           </p>
 
           {/* Dismiss */}
@@ -258,7 +315,7 @@ export default function CallPopup() {
             onMouseEnter={(e) => (e.currentTarget.style.color = "#6b7280")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#c0c8d4")}
           >
-            No thanks, I'll pay full price
+            No thanks, I'll browse first
           </button>
         </div>
       </div>
