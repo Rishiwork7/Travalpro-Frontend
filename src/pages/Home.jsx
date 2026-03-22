@@ -4,16 +4,30 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ServiceTabs from "../components/ServiceTabs";
 import SearchWidget from "../components/SearchWidget";
-import { Shield, Headset, Wallet, Star, ArrowUpRight, Quote, BadgeCheck, Globe, Search, CreditCard, Zap } from "lucide-react";
+import {
+  Shield,
+  Headset,
+  Wallet,
+  Star,
+  ArrowUpRight,
+  Quote,
+  BadgeCheck,
+  Globe,
+  Search,
+  CreditCard,
+  Zap,
+} from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeService, setActiveService] = useState(searchParams.get("service") || "flights");
+  const [activeService, setActiveService] = useState(
+    searchParams.get("service") || "flights",
+  );
 
   const handleServiceChange = (serviceId) => {
     setActiveService(serviceId);
-    setSearchParams(prev => {
+    setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       newParams.set("service", serviceId);
       return newParams;
@@ -133,7 +147,14 @@ export default function Home() {
 
     navigate(`/results?${params}`, {
       state: {
-        searchData: { ...formData, from, to, date, passengers, adults: formData.adults || 1 },
+        searchData: {
+          ...formData,
+          from,
+          to,
+          date,
+          passengers,
+          adults: formData.adults || 1,
+        },
         activeService,
       },
     });
@@ -166,7 +187,7 @@ export default function Home() {
           observer.disconnect();
         }
       },
-      { threshold: 0.35 }
+      { threshold: 0.35 },
     );
     observer.observe(statsRef.current);
     return () => observer.disconnect();
@@ -203,7 +224,7 @@ export default function Home() {
       { key: "years", label: "Years of Excellence", suffix: "+" },
       { key: "searches", label: "Daily Flight Searches", suffix: "K+" },
     ],
-    []
+    [],
   );
 
   return (
@@ -227,10 +248,14 @@ export default function Home() {
         <div className="relative w-full max-w-4xl mx-auto px-6 py-16 text-center">
           <div className="mb-8 text-white">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
-              Book Smarter. Travel Better.
+              Wholesale Flight Fares — Not Listed on Any Public Site.
             </h1>
             <p className="mt-3 text-white/90 text-lg">
-              Compare top airlines and hotel partners with confidence.
+              Speak to a travel expert and access rates 30–50% below standard
+              booking sites.
+            </p>
+            <p className="mt-2 text-[#FFDD00] font-semibold text-base">
+              Our travelers save an average of $350 per international booking.
             </p>
           </div>
 
@@ -254,7 +279,6 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* Trust Bar */}
       <section className="bg-slate-50/80 py-14">
         <div className="max-w-7xl mx-auto px-6">
@@ -263,7 +287,8 @@ export default function Home() {
               Book with Confidence
             </h2>
             <p className="text-[#64748b] text-base md:text-lg max-w-2xl mx-auto">
-              A refined booking experience built for trust, clarity, and peace of mind.
+              A refined booking experience built for trust, clarity, and peace
+              of mind.
             </p>
           </div>
 
@@ -287,7 +312,7 @@ export default function Home() {
               {
                 icon: Star,
                 title: "Trusted Brand",
-                desc: "40M+ travelers trust our service.",
+                desc: "12M+ travelers trust our service.",
               },
             ].map((item, index) => (
               <div
@@ -295,10 +320,17 @@ export default function Home() {
                 className="group bg-white p-7 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="w-14 h-14 bg-[#FFCC00] rounded-full flex items-center justify-center mb-5 shadow-[0_0_16px_rgba(255,204,0,0.25)]">
-                  <item.icon className="w-7 h-7 text-[#0f294d]" strokeWidth={2} />
+                  <item.icon
+                    className="w-7 h-7 text-[#0f294d]"
+                    strokeWidth={2}
+                  />
                 </div>
-                <h3 className="text-lg font-bold text-[#0f294d] mb-2">{item.title}</h3>
-                <p className="text-[#64748b] text-sm leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg font-bold text-[#0f294d] mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-[#64748b] text-sm leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -308,7 +340,9 @@ export default function Home() {
       {/* Deals Grid */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-2xl font-bold text-[#0f294d]">Recommended for your trip</h2>
+          <h2 className="text-2xl font-bold text-[#0f294d]">
+            Recommended for your trip
+          </h2>
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {deals.map((deal) => (
               <Link
@@ -325,8 +359,13 @@ export default function Home() {
                   <div>
                     <p className="text-[#0f294d] font-semibold">{deal.city}</p>
                     <p className="text-xs text-gray-500 mt-1">
-                      <span className="font-semibold text-[#0f294d]">{deal.from}</span> ⇄{" "}
-                      <span className="font-semibold text-[#0f294d]">{deal.to}</span>
+                      <span className="font-semibold text-[#0f294d]">
+                        {deal.from}
+                      </span>{" "}
+                      ⇄{" "}
+                      <span className="font-semibold text-[#0f294d]">
+                        {deal.to}
+                      </span>
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -340,9 +379,11 @@ export default function Home() {
                     ))}
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[#0a821c] font-bold">{formatPrice(deal.price)}</p>
+                    <p className="text-[#0a821c] font-bold">
+                      {formatPrice(deal.price)}
+                    </p>
                     <span className="text-[#0f294d] font-semibold flex items-center gap-1 text-sm">
-                      Book Now
+                      See Fares
                       <ArrowUpRight size={16} />
                     </span>
                   </div>
@@ -364,11 +405,14 @@ export default function Home() {
             {stats.map((stat, index) => (
               <div
                 key={stat.key}
-                className={`flex flex-col items-center justify-center p-4 ${index > 0 ? "md:border-l md:border-white/10" : ""
-                  }`}
+                className={`flex flex-col items-center justify-center p-4 ${
+                  index > 0 ? "md:border-l md:border-white/10" : ""
+                }`}
               >
                 <h3 className="text-4xl md:text-5xl font-extrabold text-[#FFCC00] mb-2 font-mono drop-shadow-lg">
-                  {stat.key === "rating" ? counts[stat.key].toFixed(1) : counts[stat.key]}
+                  {stat.key === "rating"
+                    ? counts[stat.key].toFixed(1)
+                    : counts[stat.key]}
                   {stat.suffix}
                 </h3>
                 {stat.stars && (
@@ -390,7 +434,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-[#0f294d]">Loved by Millions</h2>
+              <h2 className="text-2xl font-bold text-[#0f294d]">
+                Loved by Millions
+              </h2>
               <p className="text-sm text-gray-600 mt-2">
                 Verified reviews from travelers who booked with TravalPro.
               </p>
@@ -433,7 +479,9 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="font-semibold text-[#0f294d]">{t.name}</p>
-                      <p className="text-xs text-gray-500">{t.route} • {t.date}</p>
+                      <p className="text-xs text-gray-500">
+                        {t.route} • {t.date}
+                      </p>
                     </div>
                   </div>
                   <Quote size={18} className="text-[#FFCC00]" />
@@ -445,7 +493,9 @@ export default function Home() {
                   ))}
                 </div>
 
-                <p className="mt-4 text-gray-700 text-sm leading-relaxed">{t.text}</p>
+                <p className="mt-4 text-gray-700 text-sm leading-relaxed">
+                  {t.text}
+                </p>
 
                 <div className="mt-4 inline-flex items-center gap-2 text-xs text-[#0f294d] bg-[#f8fafc] px-3 py-1 rounded-full border border-gray-100">
                   <BadgeCheck size={14} className="text-[#0a821c]" />
@@ -461,11 +511,11 @@ export default function Home() {
       <section className="py-20 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-
             {/* Left Header & Features */}
             <div className="space-y-10">
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#0f294d] leading-tight">
-                Why Choose Travalpro for <br className="hidden md:block" /> Your Next Journey?
+                Why Choose Travalpro for <br className="hidden md:block" /> Your
+                Next Journey?
               </h2>
 
               <div className="space-y-8">
@@ -473,26 +523,30 @@ export default function Home() {
                   {
                     icon: <Shield className="w-6 h-6 text-blue-600" />,
                     title: "Exclusive Wholesale Deals",
-                    desc: "We negotiate directly with airlines to access hidden inventory. These private rates are often 30-50% lower than public booking sites."
+                    desc: "We negotiate directly with airlines to access hidden inventory. These private rates are often 30-50% lower than public booking sites.",
                   },
                   {
                     icon: <Globe className="w-6 h-6 text-blue-600" />,
                     title: "Strategic Route Planning",
-                    desc: "Multi-city or complex travel? Our experts use advanced tools to build efficient itineraries that automated search engines often miss."
+                    desc: "Multi-city or complex travel? Our experts use advanced tools to build efficient itineraries that automated search engines often miss.",
                   },
                   {
                     icon: <Headset className="w-6 h-6 text-blue-600" />,
                     title: "Dedicated Human Support",
-                    desc: "Zero chatbots. No long hold times. You get a direct line to a professional travel consultant who handles every detail of your booking."
-                  }
+                    desc: "Zero chatbots. No long hold times. You get a direct line to a professional travel consultant who handles every detail of your booking.",
+                  },
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-6 items-start">
                     <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
                       {item.icon}
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-[#0f294d] mb-1">{item.title}</h4>
-                      <p className="text-[#64748b] text-sm leading-relaxed">{item.desc}</p>
+                      <h4 className="text-lg font-bold text-[#0f294d] mb-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-[#64748b] text-sm leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -501,7 +555,9 @@ export default function Home() {
 
             {/* Right Side - How it Works Card */}
             <div className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-xl shadow-slate-200/50">
-              <h3 className="text-2xl font-bold text-[#0f294d] mb-10 text-center lg:text-left">Our Simple 3-Step Process</h3>
+              <h3 className="text-2xl font-bold text-[#0f294d] mb-10 text-center lg:text-left">
+                Our Simple 3-Step Process
+              </h3>
 
               <div className="relative space-y-12">
                 {/* Vertical line connecting steps */}
@@ -511,26 +567,33 @@ export default function Home() {
                   {
                     step: "1",
                     title: "Search Your Journey",
-                    desc: "Enter your destination and dates. Our engine scans 500+ carriers for the best possible wholesale availability."
+                    desc: "Enter your destination and dates. Our engine scans 500+ carriers for the best possible wholesale availability.",
                   },
                   {
                     step: "2",
                     title: "Instant Comparison",
-                    desc: "We instantly analyze hidden rates from our network of consolidators to find the one that fits your budget."
+                    desc: "We instantly analyze hidden rates from our network of consolidators to find the one that fits your budget.",
                   },
                   {
                     step: "3",
                     title: "Confirm & Save",
-                    desc: "Review your exclusive rate and finalize your booking. Our team ensures a seamless experience from checkout to takeoff."
-                  }
+                    desc: "Review your exclusive rate and finalize your booking. Our team ensures a seamless experience from checkout to takeoff.",
+                  },
                 ].map((item, idx) => (
-                  <div key={idx} className="relative flex flex-col md:flex-row gap-6 md:items-start">
+                  <div
+                    key={idx}
+                    className="relative flex flex-col md:flex-row gap-6 md:items-start"
+                  >
                     <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-blue-200 flex-shrink-0 z-10">
                       {item.step}
                     </div>
                     <div>
-                      <h4 className="text-xl font-bold text-[#0f294d] mb-2">{item.title}</h4>
-                      <p className="text-[#64748b] text-sm leading-relaxed">{item.desc}</p>
+                      <h4 className="text-xl font-bold text-[#0f294d] mb-2">
+                        {item.title}
+                      </h4>
+                      <p className="text-[#64748b] text-sm leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -539,11 +602,11 @@ export default function Home() {
               <div className="mt-12 pt-8 border-t border-slate-50 flex items-center gap-4 text-slate-400">
                 <CreditCard className="w-5 h-5 flex-shrink-0" />
                 <p className="text-xs leading-tight">
-                  We support all major payment methods. Your transaction is protected with bank-level SSL encryption.
+                  We support all major payment methods. Your transaction is
+                  protected with bank-level SSL encryption.
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -553,7 +616,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="text-white">
             <h3 className="text-2xl font-bold">Get Secret Deals</h3>
-            <p className="text-white/80 text-sm mt-1">Exclusive fares sent directly to your inbox.</p>
+            <p className="text-white/80 text-sm mt-1">
+              Subscribe and get exclusive wholesale fares — not available on
+              public sites.
+            </p>
           </div>
           <div className="flex w-full md:w-auto gap-3">
             <input
