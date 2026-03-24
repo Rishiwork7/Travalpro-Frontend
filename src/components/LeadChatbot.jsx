@@ -128,13 +128,6 @@ export default function LeadChatbot({ onClose }) {
       });
 
       if (res.ok) {
-        // Track lead Generation
-        if (window.gtag) {
-          window.gtag('event', 'generate_lead', {
-            'send_to': 'AW-18027095410',
-            'event_callback': () => console.log('Lead event tracked')
-          });
-        }
         await botReply("Excellent! I've saved your request. ✅");
         await botReply("Our travel experts will contact you shortly with the best hand-picked options.", { showCall: true });
         setStep(STEPS.SAVED);
@@ -174,8 +167,8 @@ export default function LeadChatbot({ onClose }) {
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-2`}>
             <div className={`max-w-[85%] rounded-2xl p-4 shadow-sm ${msg.role === "user"
-                ? "bg-[#0f294d] text-white rounded-tr-none"
-                : "bg-white text-[#0f294d] border border-gray-100 rounded-tl-none"
+              ? "bg-[#0f294d] text-white rounded-tr-none"
+              : "bg-white text-[#0f294d] border border-gray-100 rounded-tl-none"
               }`}>
               <p className="text-sm leading-relaxed">{msg.text}</p>
 
