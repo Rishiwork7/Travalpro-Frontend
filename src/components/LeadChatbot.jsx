@@ -128,6 +128,13 @@ export default function LeadChatbot({ onClose }) {
       });
 
       if (res.ok) {
+        // Track lead Generation
+        if (window.gtag) {
+          window.gtag('event', 'generate_lead', {
+            'send_to': 'AW-18027095410',
+            'event_callback': () => console.log('Lead event tracked')
+          });
+        }
         await botReply("Excellent! I've saved your request. ✅");
         await botReply("Our travel experts will contact you shortly with the best hand-picked options.", { showCall: true });
         setStep(STEPS.SAVED);
