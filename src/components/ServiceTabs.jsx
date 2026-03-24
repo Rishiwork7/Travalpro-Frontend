@@ -1,8 +1,20 @@
-import { Plane, Hotel, Package } from "lucide-react";
+import {
+  Plane,
+  Hotel,
+  Package,
+  Car,
+  Ship,
+  ShieldCheck,
+  Bus,
+} from "lucide-react";
 
 const SERVICES = [
   { id: "flights", name: "Flights", icon: Plane },
   { id: "hotels", name: "Hotels", icon: Hotel },
+  { id: "cabs", name: "Car Rental", icon: Car },
+  { id: "buses", name: "Bus", icon: Bus },
+  { id: "cruises", name: "Cruises", icon: Ship },
+  { id: "insurance", name: "Insurance", icon: ShieldCheck },
   { id: "packages", name: "Packages", icon: Package },
 ];
 
