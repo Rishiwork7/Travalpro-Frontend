@@ -8,6 +8,7 @@ import {
   Mail,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSettings } from "../context/SettingsContext";
 
 const normalizeType = (type) => {
@@ -41,10 +42,13 @@ const serviceLabels = {
   flights: { noun: "Flight", seats: "economy class seats" },
   hotels: { noun: "Hotel", seats: "rooms" },
   car_rental: { noun: "Car", seats: "vehicles" },
+  cabs: { noun: "Car", seats: "vehicles" },
   cruises: { noun: "Cruise", seats: "cabins" },
   bus: { noun: "Bus", seats: "seats" },
+  buses: { noun: "Bus", seats: "seats" },
   train: { noun: "Train", seats: "seats" },
   insurance: { noun: "Plan", seats: "plans" },
+  packages: { noun: "Package", seats: "packages" },
 };
 
 export default function BookingModal({
@@ -72,7 +76,7 @@ export default function BookingModal({
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
     if (isOpen) {
       setForm({ name: "", email: "", phone: "" });
       setStep(1);
@@ -115,10 +119,22 @@ export default function BookingModal({
     setLoading(false);
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+        background: "rgba(0,0,0,0.6)",
+        backdropFilter: "blur(4px)",
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -725,6 +741,7 @@ export default function BookingModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

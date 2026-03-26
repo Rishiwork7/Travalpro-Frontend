@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
+import BookingModal from "../components/BookingModal";
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,6 +36,8 @@ export default function Home() {
   };
 
   const [formData, setFormData] = useState({});
+  const [leadBooking, setLeadBooking] = useState(null);
+  const [leadOpen, setLeadOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [toast, setToast] = useState("");
   const { formatPrice } = useSettings();
@@ -160,6 +163,11 @@ export default function Home() {
     });
   };
 
+  const handleLeadCapture = (mockBooking) => {
+    setLeadBooking(mockBooking);
+    setLeadOpen(true);
+  };
+
   const handleSubscribe = () => {
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValid) {
@@ -278,6 +286,7 @@ export default function Home() {
                   formData={formData}
                   setFormData={setFormData}
                   onSearch={handleSearch}
+                  onLeadCapture={handleLeadCapture}
                   containerClassName="rounded-t-none border-t-0 shadow-none"
                 />
               </div>
@@ -671,6 +680,18 @@ export default function Home() {
       )}
 
       <Footer />
+
+      {leadOpen && (
+        <BookingModal
+          isOpen={leadOpen}
+          onClose={() => setLeadOpen(false)}
+          onContinue={() => setLeadOpen(false)}
+          booking={leadBooking}
+          passengerCount={formData.passengers || 1}
+          serviceType={activeService}
+          resultsCount={1}
+        />
+      )}
     </div>
   );
 }
