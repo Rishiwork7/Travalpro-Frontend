@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import ResultsPage from "./pages/ResultsPage";
@@ -25,6 +26,7 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }
