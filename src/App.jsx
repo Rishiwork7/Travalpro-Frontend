@@ -9,25 +9,28 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
-    <Router>
-      <CallPopup />
-      <HelpAssistant />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/results" element={<ResultsPage />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/review" element={<ReviewPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <CallPopup />
+        <HelpAssistant />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/results" element={<ResultsPage />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/review" element={<ReviewPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+        </Routes>
+      </Router>
+      <Analytics />
+    </>
   );
 }
 
 export default App;
-
