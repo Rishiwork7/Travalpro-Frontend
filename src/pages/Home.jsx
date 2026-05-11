@@ -549,7 +549,7 @@ export default function Home() {
             {/* Left Header & Features */}
             <div className="space-y-10">
               <h2 className="text-3xl md:text-4xl font-extrabold text-[#0f294d] leading-tight">
-                Why Choose Travalpro for <br className="hidden md:block" /> Your
+                Why Choose Travalport for <br className="hidden md:block" /> Your
                 Next Journey?
               </h2>
 
