@@ -193,7 +193,7 @@ useEffect(() => {
               marginBottom: "28px",
             }}
           >
-            ✈ TRAVALPRO EXCLUSIVE
+            ✈ TRAVALPORT EXCLUSIVE
           </div>
 
           {/* Headline */}
