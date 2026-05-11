@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
         <div>
           <h2 className="text-2xl font-bold">
-            Traval<span className="text-[#FFDD00]">Pro</span>
+            Traval<span className="text-[#FFDD00]">Port</span>
           </h2>
           <p className="text-white/70 mt-3 text-sm">
             Enterprise-grade travel booking for flights, hotels, and premium packages.
